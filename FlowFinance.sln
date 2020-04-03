@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.87
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlowFinance", "dotnet\FlowFinance.csproj", "{21BEC22B-450E-4D2E-B140-8650F2E7D372}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{E3CB6357-1574-4E50-BBC4-E894DF177D4D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{21BEC22B-450E-4D2E-B140-8650F2E7D372}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21BEC22B-450E-4D2E-B140-8650F2E7D372}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21BEC22B-450E-4D2E-B140-8650F2E7D372}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21BEC22B-450E-4D2E-B140-8650F2E7D372}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3CB6357-1574-4E50-BBC4-E894DF177D4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3CB6357-1574-4E50-BBC4-E894DF177D4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3CB6357-1574-4E50-BBC4-E894DF177D4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3CB6357-1574-4E50-BBC4-E894DF177D4D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {722B8AEE-1C91-47C7-A7FD-FF34656C6D20}
+	EndGlobalSection
+EndGlobal

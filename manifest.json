@@ -1,0 +1,82 @@
+{
+  "name": "flow-finance-api",
+  "vendor": "vtex",
+  "version": "0.0.1",
+  "title": "Flow Finance",
+  "description": "An integration with Flow Finance payment API",
+  "categories": [],
+  "settingsSchema": {
+    "title": "Flow Finance",
+    "type": "object",
+    "properties": {
+      "clientId": {
+        "title": "Client Id",
+        "description": "Client Id",
+        "type": "string"
+      },
+      "clientSecret": {
+        "title": "Client Secret",
+        "description": "Client Secret",
+        "type": "string"
+      },
+      "isLive": {
+        "title": "Live",
+        "description": "Production",
+        "type": "boolean"
+      }
+    }
+  },
+  "registries": [
+    "smartcheckout"
+  ],
+  "builders": {
+    "dotnet": "2.x",
+    "graphql": "1.x"
+  },
+  "mustUpdateAt": "2018-09-05",
+  "scripts": {
+    "postreleasy": "vtex publish --verbose"
+  },
+  "policies": [
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "bnb.data.bl.uk"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "nuget.org"
+      }
+    },
+    {
+      "name": "ADMIN_DS"
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "{{account}}.vtexcommercestable.com.br",
+        "path": "/api/dataentities/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "mailservice.vtex.com.br",
+        "path": "/api/mail-service/pvt/sendmail"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "stg-gpp.flowfinance.com.br",
+        "path": "/api/v1/*"
+      }
+    },
+    {
+      "name": "vbase-read-write"
+    }
+  ],
+  "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
+}

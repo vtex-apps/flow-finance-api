@@ -1,0 +1,139 @@
+type BusinessInfo {
+	businessId: String!
+	name: String!
+	legalName: String!
+	address: Address!
+	contactInfo: ContactInfo!
+	documents: Documents!
+}
+
+type PersonalInfo {
+	idNumber: String!
+	maritalStatus: String!
+	pep: Boolean!
+	lastName: String!
+	firstName: String!
+	documents: Documents!
+	contactInfo: ContactInfo!
+	accountOpener: Boolean!
+}
+
+type Address {
+	streetName: String!
+    streetNumber: String!
+    postalCode: String!
+    district: String!
+    city: String!
+    stateCode: String!
+    country: String!
+    extraAddressInfo: String
+}
+
+type ContactInfo {
+	email: String!
+	phoneNumber: String!
+}
+
+type Documents {
+	physicalDocument: [PhysicalDocument]!
+	virtualDocument: [VirtualDocument]!
+}
+
+type PhysicalDocument {
+	type: String!
+	value: String!
+}
+
+type VirtualDocument {
+	type: String!
+	value: String!
+	exp: String
+	issuer: String
+}
+
+type TOS {
+	date: String!
+	ip: String!
+	userAgent: String!
+}
+
+type ApplicationResult {
+	success: Boolean!
+	error: String
+}
+
+# Mutations 
+
+input ApplicationInput {
+	businessInfo: BusinessInfoInput!
+	personalInfo: PersonalInfoInput!
+	tosAcceptance: TOSInput!
+}
+
+input BusinessInfoInput {
+	businessId: String!
+	name: String!
+	legalName: String!
+	address: AddressInput!
+	contactInfo: ContactInfoInput!
+	documents: DocumentsInput!
+}
+
+input PersonalInfoInput {
+	idNumber: String!
+	maritalStatus: String!
+	pep: Boolean!
+	lastName: String!
+	firstName: String!
+	documents: DocumentsInput!
+	contactInfo: ContactInfoInput!
+	accountOpener: Boolean!
+}
+
+input TOSInput {
+	date: String!
+	ip: String!
+	userAgent: String!
+}
+
+input AddressInput {
+	streetName: String!
+    streetNumber: String!
+    postalCode: String!
+    district: String!
+    city: String!
+    stateCode: String!
+    country: String!
+    extraAddressInfo: String
+}
+
+input ContactInfoInput {
+	email: String!
+	phoneNumber: String!
+}
+
+input DocumentsInput {
+	physicalDocument: [PhysicalDocumentInput]!
+	virtualDocument: [VirtualDocumentInput]!
+}
+
+input PhysicalDocumentInput {
+	type: String!
+	value: String!
+}
+
+input VirtualDocumentInput {
+	type: String!
+	value: String!
+	exp: String
+	issuer: String
+}
+
+type Mutation {
+	checkPreQualify(cnpj: String!): Boolean
+	processApplication(application: ApplicationInput!): ApplicationResult
+}
+
+type Query {
+	businessInfo: BusinessInfo
+}

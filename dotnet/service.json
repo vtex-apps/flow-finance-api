@@ -1,0 +1,102 @@
+{
+  "stack": "dotnet",
+  "memory": 256,
+  "runtimeArgs": [
+  ],
+  "routes": {
+    "printHeaders": {
+      "path": "/flow-finance/print-headers",
+      "public": true
+    },
+    "inboundAsync": {
+      "path": "/flow-finance/payment-provider/payments/:paymentId/inbound/:actiontype",
+      "public": true
+    },
+    "paymentMethods": {
+      "path": "/flow-finance/payment-provider/payment-methods",
+      "public": true
+    },
+    "createPaymentAsync": {
+      "path": "/flow-finance/payment-provider/payments",
+      "public": true
+    },
+    "cancelPaymentAsync": {
+      "path": "/flow-finance/payment-provider/payments/:paymentId/cancellations",
+      "public": true
+    },
+    "capturePaymentAsync": {
+      "path": "/flow-finance/payment-provider/payments/:paymentId/settlements",
+      "public": true
+    },
+    "refundPaymentAsync": {
+      "path": "/flow-finance/payment-provider/payments/:paymentId/refunds",
+      "public": true
+    },
+    "getPaymentRequestAsync": {
+      "path": "/flow-finance/payment-provider/payments/:paymentIdentifier/request",
+      "public": true
+    },
+    "authorizeAsync": {
+      "path": "/flow-finance/payment-provider/payments/:paymentIdentifier/auth/:token/:callbackUrl/:orderTotal",
+      "public": true
+    },
+    "readChargeAsync": {
+      "path": "/flow-finance/payment-provider/payments/:paymentIdentifier/read",
+      "public": true
+    },
+    "getAppSettings": {
+      "path": "/flow-finance/payment-provider/payments/settings",
+      "public": false
+    },
+    "getLoanOptions": {
+      "path": "/flow-finance/get-loan-options",
+      "public": true
+    },
+    "processCallback": {
+      "path": "/flow-finance/callback",
+      "public": true
+    },
+    "listAccounts": {
+      "path": "/flow-finance/list-accounts/:page/:limit",
+      "public": true
+    },
+    "listPersons": {
+      "path": "/flow-finance/list-persons/:accountId",
+      "public": true
+    },
+    "createWebhook": {
+      "path": "/flow-finance/create-webhook",
+      "public": false
+    },
+    "createLoan": {
+      "path": "/flow-finance/create-loan/:offerToken/:accountId",
+      "public": true
+    },
+    "listShoppers": {
+      "path": "/flow-finance/list-shoppers",
+      "public": true
+    },
+    "signLoan": {
+      "path": "/flow-finance/sign-loan/:loanId/:accountId",
+      "public": true
+    },
+    "retrieveLoanById": {
+      "path": "/flow-finance/view-loan/:loanId/:accountId",
+      "public": true
+    },
+    "deleteWebhook": {
+      "path": "/flow-finance/delete-webhook/:webhookId",
+      "public": true
+    },
+    "initWebhooks": {
+      "path": "/flow-finance/init-webhooks/:siteRoot",
+      "public": true
+    }
+  },
+    "events": {
+      "onAppsLinked": {
+        "sender": "apps",
+        "keys": [ "linked" ]
+      }
+    }
+  }
