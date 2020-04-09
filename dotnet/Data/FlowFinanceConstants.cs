@@ -26,6 +26,8 @@
 
         public const string Acquirer = "FlowFinance";
 
+        public const string Success = "[Success]";
+
         public const string APPLICATION_JSON = "application/json";
         public const string HEADER_VTEX_CREDENTIAL = "X-Vtex-Credential";
         public const string AUTHORIZATION_HEADER_NAME = "Authorization";
@@ -40,8 +42,7 @@
 
         public class Inbound
         {
-            public const string ActionAuthorize = "auth";
-            public const string AcceptedResponse = "[accepted]";
+            public const string ActionLoanAcceptance = "loanAcceptance";
         }
 
         public class Vtex

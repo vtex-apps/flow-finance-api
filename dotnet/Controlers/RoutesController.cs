@@ -13,6 +13,7 @@
     public class RoutesController : Controller
     {
         private readonly IFlowFinancePaymentService _flowFinancePaymentService;
+        private const string FORWARDED_HEADER = "X-Forwarded-For";
 
         public RoutesController(IFlowFinancePaymentService flowFinancePaymentService)
         {
@@ -45,22 +46,11 @@
         /// <returns></returns>
         public async Task<IActionResult> CancelPaymentAsync(string paymentId)
         {
-            //string privateKey = HttpContext.Request.Headers[FlowFinanceConstants.PrivateKeyHeader];
-            //string publicKey = HttpContext.Request.Headers[FlowFinanceConstants.PublicKeyHeader];
-
             var bodyAsText = await new System.IO.StreamReader(HttpContext.Request.Body).ReadToEndAsync();
             CancelPaymentRequest cancelPaymentRequest = JsonConvert.DeserializeObject<CancelPaymentRequest>(bodyAsText);
+            var cancelResponse = await this._flowFinancePaymentService.CancelPaymentAsync(cancelPaymentRequest);
 
-            //if (string.IsNullOrWhiteSpace(privateKey) || string.IsNullOrWhiteSpace(publicKey))
-            //{
-            //    return BadRequest();
-            //}
-            //else
-            //{
-                var cancelResponse = await this._flowFinancePaymentService.CancelPaymentAsync(cancelPaymentRequest);
-
-                return Json(cancelResponse);
-            //}
+            return Json(cancelResponse);
         }
 
         /// <summary>
@@ -71,22 +61,11 @@
         /// <returns></returns>
         public async Task<IActionResult> CapturePaymentAsync(string paymentId)
         {
-            //string privateKey = HttpContext.Request.Headers[FlowFinanceConstants.PrivateKeyHeader];
-            //string publicKey = HttpContext.Request.Headers[FlowFinanceConstants.PublicKeyHeader];
-
             var bodyAsText = await new System.IO.StreamReader(HttpContext.Request.Body).ReadToEndAsync();
             CapturePaymentRequest capturePaymentRequest = JsonConvert.DeserializeObject<CapturePaymentRequest>(bodyAsText);
+            var captureResponse = await this._flowFinancePaymentService.CapturePaymentAsync(capturePaymentRequest);
 
-            //if (string.IsNullOrWhiteSpace(privateKey) || string.IsNullOrWhiteSpace(publicKey))
-            //{
-            //    return BadRequest();
-            //}
-            //else
-            //{
-                var captureResponse = await this._flowFinancePaymentService.CapturePaymentAsync(capturePaymentRequest);
-
-                return Json(captureResponse);
-            //}
+            return Json(captureResponse);
         }
 
         /// <summary>
@@ -97,22 +76,11 @@
         /// <returns></returns>
         public async Task<IActionResult> RefundPaymentAsync(string paymentId)
         {
-            //string privateKey = HttpContext.Request.Headers[FlowFinanceConstants.PrivateKeyHeader];
-            //string publicKey = HttpContext.Request.Headers[FlowFinanceConstants.PublicKeyHeader];
-
             var bodyAsText = await new System.IO.StreamReader(HttpContext.Request.Body).ReadToEndAsync();
             RefundPaymentRequest refundPaymentRequest = JsonConvert.DeserializeObject<RefundPaymentRequest>(bodyAsText);
+            var refundResponse = await this._flowFinancePaymentService.RefundPaymentAsync(refundPaymentRequest);
 
-            //if (string.IsNullOrWhiteSpace(privateKey) || string.IsNullOrWhiteSpace(publicKey))
-            //{
-            //    return BadRequest();
-            //}
-            //else
-            //{
-                var refundResponse = await this._flowFinancePaymentService.RefundPaymentAsync(refundPaymentRequest);
-
-                return Json(refundResponse);
-            //}
+            return Json(refundResponse);
         }
 
         /// <summary>
@@ -130,33 +98,6 @@
         }
 
         /// <summary>
-        /// After completing the checkout flow and receiving the checkout token, authorize the charge.
-        /// Authorizing generates a charge ID that you’ll use to reference the charge moving forward.
-        /// You must authorize a charge to fully create it. A charge is not visible in the Read response,
-        /// nor in the merchant dashboard until you authorize it.
-        /// </summary>
-        /// <param name="paymentIdentifier">Payment GUID</param>
-        /// <param name="token"></param>
-        /// <returns></returns>
-        public async Task<IActionResult> AuthorizeAsync(string paymentIdentifier, string token, string callbackUrl, int orderTotal)
-        {
-            //string privateKey = HttpContext.Request.Headers[FlowFinanceConstants.PrivateKeyHeader];
-            //string publicKey = HttpContext.Request.Headers[FlowFinanceConstants.PublicKeyHeader];
-
-            //if (string.IsNullOrWhiteSpace(privateKey) || string.IsNullOrWhiteSpace(publicKey))
-            //{
-            //    return BadRequest();
-            //}
-            //else
-            //{
-                var paymentRequest = await this._flowFinancePaymentService.AuthorizeAsync(paymentIdentifier, token, callbackUrl, orderTotal, string.Empty);
-                Response.Headers.Add("Cache-Control", "private");
-
-                return Json(paymentRequest);
-            //}
-        }
-
-        /// <summary>
         /// Read the charge information, current charge status, and checkout data
         /// </summary>
         /// <param name="paymentIdentifier">Payment GUID</param>
@@ -164,20 +105,10 @@
         /// <returns></returns>
         public async Task<IActionResult> ReadChargeAsync(string paymentIdentifier)
         {
-            //string privateKey = HttpContext.Request.Headers[FlowFinanceConstants.PrivateKeyHeader];
-            //string publicKey = HttpContext.Request.Headers[FlowFinanceConstants.PublicKeyHeader];
+            var paymentRequest = await this._flowFinancePaymentService.ReadChargeAsync(paymentIdentifier);
+            Response.Headers.Add("Cache-Control", "private");
 
-            //if (string.IsNullOrWhiteSpace(privateKey) || string.IsNullOrWhiteSpace(publicKey))
-            //{
-            //    return BadRequest();
-            //}
-            //else
-            //{
-                var paymentRequest = await this._flowFinancePaymentService.ReadChargeAsync(paymentIdentifier);
-                Response.Headers.Add("Cache-Control", "private");
-
-                return Json(paymentRequest);
-            //}
+            return Json(paymentRequest);
         }
 
         public async Task<IActionResult> InboundAsync(string actiontype)
@@ -189,8 +120,6 @@
             string responseStatusCode = string.Empty;
             string responseBody = string.Empty;
 
-            //string privateKey = HttpContext.Request.Headers[FlowFinanceConstants.PrivateKeyHeader];
-            //string publicKey = HttpContext.Request.Headers[FlowFinanceConstants.PublicKeyHeader];
             var bodyAsText = await new System.IO.StreamReader(HttpContext.Request.Body).ReadToEndAsync();
             InboundRequest inboundRequest = JsonConvert.DeserializeObject<InboundRequest>(bodyAsText);
             dynamic inboundRequestBody = null;
@@ -210,32 +139,27 @@
             {
                 responseStatusCode = StatusCodes.Status400BadRequest.ToString();
             }
-            //else if (string.IsNullOrWhiteSpace(privateKey) || string.IsNullOrWhiteSpace(publicKey))
-            //{
-            //    responseStatusCode = StatusCodes.Status400BadRequest.ToString();
-            //    responseMessage = "Missing keys.";
-            //}
             else
             {
                 switch(actiontype)
                 {
-                    case FlowFinanceConstants.Inbound.ActionAuthorize:
-                        string token = inboundRequestBody.token;
-                        string callbackUrl = inboundRequestBody.callbackUrl;
-                        int amount = inboundRequestBody.orderTotal;
-                        string orderId = inboundRequestBody.orderId;
-                        if (string.IsNullOrEmpty(paymentId) || string.IsNullOrEmpty(token) || string.IsNullOrEmpty(callbackUrl))
+                    case FlowFinanceConstants.Inbound.ActionLoanAcceptance:
+                        Models.SignLoanRequest.RootObject signLoanRequest = new Models.SignLoanRequest.RootObject
                         {
-                            responseStatusCode = StatusCodes.Status400BadRequest.ToString();
-                            responseMessage = "Missing parameters.";
-                        }
-                        else
-                        {
-                            var paymentRequest = await this._flowFinancePaymentService.AuthorizeAsync(paymentId, token, callbackUrl, amount, orderId);
-                            Response.Headers.Add("Cache-Control", "private");
+                            signature = new Models.SignLoanRequest.Signature
+                            {
+                                date = DateTime.Now,
+                                userAgent = inboundRequestBody.userAgent,
+                                ip = HttpContext.Request.Headers[FORWARDED_HEADER]
+                            }
+                        };
 
-                            responseBody = JsonConvert.SerializeObject(paymentRequest);
+                        responseBody = await this._flowFinancePaymentService.SignLoan(signLoanRequest, inboundRequestBody.loanId, inboundRequestBody.accountId);
+                        if (responseBody.Equals(FlowFinanceConstants.Success))
+                        {
                             responseStatusCode = StatusCodes.Status200OK.ToString();
+                            // Verify that the loan is signed and update the status with Vtex Payment
+                            this._flowFinancePaymentService.VerifyLoanAsync(paymentId, inboundRequestBody.loanId, inboundRequestBody.accountId, inboundRequestBody.callbackUrl, inboundRequestBody.amount);
                         }
 
                         break;

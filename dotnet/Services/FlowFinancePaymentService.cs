@@ -78,6 +78,19 @@ namespace FlowFinance.Services
                         //paymentResponse.nsu
                         paymentResponse.status = FlowFinanceConstants.Vtex.Approved;
                         //paymentResponse.tid
+                        paymentResponse.paymentAppData = new PaymentAppData
+                        {
+                            appName = FlowFinanceConstants.PaymentApp,
+                            payload = JsonConvert.SerializeObject(new Payload
+                            {
+                                inboundRequestsUrl = createPaymentRequest.inboundRequestsUrl,
+                                callbackUrl = createPaymentRequest.callbackUrl,
+                                pdfUrl = createLoanResponse.data.ccb_url,
+                                loanId = createLoanResponse.data.id,
+                                transactionId = createPaymentRequest.transactionId,
+                                accountId = accountId
+                            })
+                        };
                     }
                     else
                     {
@@ -171,28 +184,32 @@ namespace FlowFinance.Services
         /// <param name="publicKey"></param>
         /// <param name="privateKey"></param>
         /// <returns></returns>
-        public async Task<CreatePaymentResponse> AuthorizeAsync(string paymentIdentifier, string token, string callbackUrl, int amount, string orderId)
+        public async Task<CreatePaymentResponse> VerifyLoanAsync(string paymentIdentifier, string loanId, int accountId, string callbackUrl, int amount)
         {
-            if (string.IsNullOrEmpty(orderId))
-            {
-                orderId = paymentIdentifier;
-            }
-
             string paymentStatus = FlowFinanceConstants.Vtex.Denied;
 
-            //if (flowFinanceResponse)
-            //{
-            //    paymentStatus = FlowFinanceConstants.Vtex.Approved;
-            //}
+            Models.RetrieveLoanByIdResponse.RootObject retrieveLoanByIdResponse = await this.RetrieveLoanById(loanId, accountId);
 
-            CreatePaymentResponse paymentResponse = null;
+            if (retrieveLoanByIdResponse.data.details.pt_br.vlr_financiado != null && retrieveLoanByIdResponse.data.details.pt_br.vlr_financiado >= amount)
+            {
+                paymentStatus = FlowFinanceConstants.Vtex.Approved;
+            }
+
+            CreatePaymentResponse paymentResponse = new CreatePaymentResponse();
+            paymentResponse.paymentId = paymentIdentifier;
+            paymentResponse.status = paymentStatus;
+            paymentResponse.tid = retrieveLoanByIdResponse.data.offer_token;
+            paymentResponse.authorizationId = retrieveLoanByIdResponse.data.id;
+            paymentResponse.code = retrieveLoanByIdResponse.data.balance;
+            paymentResponse.message = JsonConvert.SerializeObject(retrieveLoanByIdResponse.data.details.pt_br);
+
+            await this._paymentRequestRepository.PostCallbackResponse(callbackUrl, paymentResponse);
 
             return paymentResponse;
         }
 
         public async Task<CreatePaymentResponse> ReadChargeAsync(string paymentId)
         {
-
             return null;
         }
 
@@ -491,7 +508,7 @@ namespace FlowFinance.Services
                 Models.CreateAccountResponse.RootObject createAccountResponse = (Models.CreateAccountResponse.RootObject)responseWrapperCreateAccount.responseObject;
                 accountId = createAccountResponse.data.id;
 
-                Console.WriteLine($"->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->-> Account Id = [{accountId}]");
+                //Console.WriteLine($"->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->-> Account Id = [{accountId}]");
 
                 Models.CreatePersonRequest.RootObject createPersonRequest = new Models.CreatePersonRequest.RootObject()
                 {
@@ -623,7 +640,7 @@ namespace FlowFinance.Services
             MerchantSettings merchantSettings = await this._paymentRequestRepository.GetMerchantSettings();
             IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings);
             ResponseWrapper responseWrapper = await flowFinanceAPI.SignLoan(signLoanRequest, loanId, accountId);
-            string signLoanResponse = responseWrapper.success ? responseWrapper.responseMessage : responseWrapper.errorMessage;
+            string signLoanResponse = responseWrapper.success ? FlowFinanceConstants.Success : responseWrapper.errorMessage;
 
             return signLoanResponse;
         }
