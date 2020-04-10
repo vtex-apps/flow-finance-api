@@ -23,7 +23,7 @@
         private const string HEADER_VTEX_WORKSPACE = "X-Vtex-Workspace";
         private const string HEADER_VTEX_ACCOUNT = "X-Vtex-Account";
         private const string APPLICATION_JSON = "application/json";
-        private const string APP_SETTINGS = "vtex.flow-finance";
+        private const string APP_SETTINGS = "vtex.flow-finance-api";
         private const string ENVIRONMENT = "vtexcommercestable";
         private readonly IVtexEnvironmentVariableProvider _environmentVariableProvider;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -153,6 +153,8 @@
                 RequestUri = new Uri($"http://apps.{this._environmentVariableProvider.Region}.vtex.io/{this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_ACCOUNT]}/{this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_WORKSPACE]}/apps/{APP_SETTINGS}/settings"),
             };
 
+            Console.WriteLine($"Request URL = {request.RequestUri}");
+
             string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
             if (authToken != null)
             {
@@ -162,6 +164,7 @@
             var client = _clientFactory.CreateClient();
             var response = await client.SendAsync(request);
             string responseContent = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"Response = {responseContent}");
 
             return JsonConvert.DeserializeObject<MerchantSettings>(responseContent);
         }
