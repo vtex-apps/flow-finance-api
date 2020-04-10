@@ -1,7 +1,7 @@
 {
   "name": "flow-finance-api",
   "vendor": "vtex",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "title": "Flow Finance",
   "description": "An integration with Flow Finance payment API",
   "categories": [],

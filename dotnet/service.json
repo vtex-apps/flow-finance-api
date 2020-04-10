@@ -9,43 +9,43 @@
       "public": true
     },
     "inboundAsync": {
-      "path": "/flow-finance/payment-provider/payments/:paymentId/inbound/:actiontype",
+      "path": "/_v/api/connectors/flow-finance/payments/:paymentId/inbound/:actiontype",
       "public": true
     },
     "paymentMethods": {
-      "path": "/flow-finance/payment-provider/payment-methods",
+      "path": "/_v/api/connectors/flow-finance/payment-methods",
       "public": true
     },
     "createPaymentAsync": {
-      "path": "/flow-finance/payment-provider/payments",
+      "path": "/_v/api/connectors/flow-finance/payments",
       "public": true
     },
     "cancelPaymentAsync": {
-      "path": "/flow-finance/payment-provider/payments/:paymentId/cancellations",
+      "path": "/_v/api/connectors/flow-finance/payments/:paymentId/cancellations",
       "public": true
     },
     "capturePaymentAsync": {
-      "path": "/flow-finance/payment-provider/payments/:paymentId/settlements",
+      "path": "/_v/api/connectors/flow-finance/payments/:paymentId/settlements",
       "public": true
     },
     "refundPaymentAsync": {
-      "path": "/flow-finance/payment-provider/payments/:paymentId/refunds",
+      "path": "/_v/api/connectors/flow-finance/payments/:paymentId/refunds",
       "public": true
     },
     "getPaymentRequestAsync": {
-      "path": "/flow-finance/payment-provider/payments/:paymentIdentifier/request",
+      "path": "/_v/api/connectors/flow-finance/payments/:paymentIdentifier/request",
       "public": true
     },
     "authorizeAsync": {
-      "path": "/flow-finance/payment-provider/payments/:paymentIdentifier/auth/:token/:callbackUrl/:orderTotal",
+      "path": "/_v/api/connectors/flow-finance/payments/:paymentIdentifier/auth/:token/:callbackUrl/:orderTotal",
       "public": true
     },
     "readChargeAsync": {
-      "path": "/flow-finance/payment-provider/payments/:paymentIdentifier/read",
+      "path": "/_v/api/connectors/flow-finance/payments/:paymentIdentifier/read",
       "public": true
     },
     "getAppSettings": {
-      "path": "/flow-finance/payment-provider/payments/settings",
+      "path": "/_v/api/connectors/flow-finance/payments/settings",
       "public": false
     },
     "getLoanOptions": {
