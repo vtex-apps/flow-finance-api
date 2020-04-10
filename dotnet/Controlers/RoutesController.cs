@@ -188,10 +188,14 @@
 
         public async Task<IActionResult> GetLoanOptions()
         {
-            var bodyAsText = await new System.IO.StreamReader(HttpContext.Request.Body).ReadToEndAsync();
-            GetLoanOptionsRequest getLoanOptionsRequest = JsonConvert.DeserializeObject<GetLoanOptionsRequest>(bodyAsText);
-            GetLoanOptionsResponse getLoanOptionsResponse = await this._flowFinancePaymentService.GetLoanOptions(getLoanOptionsRequest);
-            Response.Headers.Add("Cache-Control", "private");
+            GetLoanOptionsResponse getLoanOptionsResponse = null;
+            string bodyAsText = await new System.IO.StreamReader(HttpContext.Request.Body).ReadToEndAsync();
+            if (!string.IsNullOrEmpty(bodyAsText))
+            {
+                GetLoanOptionsRequest getLoanOptionsRequest = JsonConvert.DeserializeObject<GetLoanOptionsRequest>(bodyAsText);
+                getLoanOptionsResponse = await this._flowFinancePaymentService.GetLoanOptions(getLoanOptionsRequest);
+                Response.Headers.Add("Cache-Control", "private");
+            }
 
             return Json(getLoanOptionsResponse);
         }

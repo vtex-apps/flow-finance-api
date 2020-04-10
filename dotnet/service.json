@@ -5,7 +5,7 @@
   ],
   "routes": {
     "printHeaders": {
-      "path": "/flow-finance/print-headers",
+      "path": "/_v/api/connectors/flow-finance/print-headers",
       "public": true
     },
     "inboundAsync": {
@@ -49,23 +49,23 @@
       "public": false
     },
     "getLoanOptions": {
-      "path": "/flow-finance/get-loan-options",
+      "path": "/_v/api/connectors/flow-finance/get-loan-options",
       "public": true
     },
     "processCallback": {
-      "path": "/flow-finance/callback",
+      "path": "/_v/api/connectors/flow-finance/callback",
       "public": true
     },
     "listAccounts": {
-      "path": "/flow-finance/list-accounts/:page/:limit",
+      "path": "/_v/api/connectors/flow-finance/list-accounts/:page/:limit",
       "public": true
     },
     "listPersons": {
-      "path": "/flow-finance/list-persons/:accountId",
+      "path": "/_v/api/connectors/flow-finance/list-persons/:accountId",
       "public": true
     },
     "createWebhook": {
-      "path": "/flow-finance/create-webhook",
+      "path": "/_v/api/connectors/flow-finance/create-webhook",
       "public": false
     },
     "createLoan": {
@@ -73,23 +73,23 @@
       "public": true
     },
     "listShoppers": {
-      "path": "/flow-finance/list-shoppers",
+      "path": "/_v/api/connectors/flow-finance/list-shoppers",
       "public": true
     },
     "signLoan": {
-      "path": "/flow-finance/sign-loan/:loanId/:accountId",
+      "path": "/_v/api/connectors/flow-finance/sign-loan/:loanId/:accountId",
       "public": true
     },
     "retrieveLoanById": {
-      "path": "/flow-finance/view-loan/:loanId/:accountId",
+      "path": "/_v/api/connectors/flow-finance/view-loan/:loanId/:accountId",
       "public": true
     },
     "deleteWebhook": {
-      "path": "/flow-finance/delete-webhook/:webhookId",
+      "path": "/_v/api/connectors/flow-finance/delete-webhook/:webhookId",
       "public": true
     },
     "initWebhooks": {
-      "path": "/flow-finance/init-webhooks/:siteRoot",
+      "path": "/_v/api/connectors/flow-finance/init-webhooks/:siteRoot",
       "public": true
     }
   },

@@ -695,7 +695,7 @@ namespace FlowFinance.Services
                         FlowFinanceConstants.WebHookNotification.AccountUpdated,
                         FlowFinanceConstants.WebHookNotification.AccountCreated
                     },
-                    url = $"https://{siteRoot}/flow-finance/callback"
+                    url = $"https://{siteRoot}/_v/api/connectors/flow-finance/callback"
                 };
 
                 responseWrapper = await flowFinanceAPI.CreateWebhookEndpoint(createWebhookEndpointRequest);
@@ -720,14 +720,26 @@ namespace FlowFinance.Services
 
         public async Task<FlowFinanceShopper> GetFlowFinanceShopperByEmail(string email)
         {
+            FlowFinanceShopper flowFinanceShopper = null;
             IList<FlowFinanceShopper> currentShoppers = await this._paymentRequestRepository.GetFlowFinanceShoppers();
-            return currentShoppers.Where(n => n.email.Equals(email, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+            if(currentShoppers != null && currentShoppers.Count > 0)
+            {
+                flowFinanceShopper = currentShoppers.Where(n => n.email.Equals(email, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+            }
+
+            return flowFinanceShopper;
         }
 
         public async Task<FlowFinanceShopper> GetFlowFinanceShopperById(string id)
         {
+            FlowFinanceShopper flowFinanceShopper = null;
             IList<FlowFinanceShopper> currentShoppers = await this._paymentRequestRepository.GetFlowFinanceShoppers();
-            return currentShoppers.Where(n => n.accountId.Equals(id, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+            if (currentShoppers != null && currentShoppers.Count > 0)
+            { 
+                flowFinanceShopper = currentShoppers.Where(n => n.accountId.Equals(id, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+            }
+
+            return flowFinanceShopper;
         }
 
         public async Task<Models.RetrieveLoanByIdResponse.RootObject> RetrieveLoanById(string loanId, int accountId)
