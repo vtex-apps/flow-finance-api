@@ -37,10 +37,10 @@ namespace FlowFinance.Models.ListAccountsResponse
 
     public class Documents
     {
-        [JsonProperty("virtual")]
+        [JsonProperty("virtual", NullValueHandling = NullValueHandling.Ignore)]
         public List<Virtual> virtualDocuments { get; set; }
 
-        [JsonProperty("physical")]
+        [JsonProperty("physical", NullValueHandling = NullValueHandling.Ignore)]
         public List<Physical> physicalDocuments { get; set; }
     }
 

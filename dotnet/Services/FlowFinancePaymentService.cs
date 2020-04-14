@@ -464,34 +464,41 @@ namespace FlowFinance.Services
                     },
                     documents = new Models.CreateAccountRequest.Documents
                     {
-                        physicalDocuments = new List<Models.CreateAccountRequest.Physical>(),
-                        virtualDocuments = new List<Models.CreateAccountRequest.Virtual>()
+
                     },
                     legal_name = applicationInput.businessInfo.legalName,
                     name = applicationInput.businessInfo.name
                 }
             };
 
-            foreach(PhysicalDocument physicalDocument in applicationInput.businessInfo.documents.physicalDocument)
+            if (applicationInput.businessInfo.documents.physicalDocument != null)
             {
-                createAccountRequest.business.documents.physicalDocuments.Add(
-                    new Models.CreateAccountRequest.Physical()
-                    {
-                        type = physicalDocument.type,
-                        value = physicalDocument.value
-                    });
+                createAccountRequest.business.documents.physicalDocuments = new List<Models.CreateAccountRequest.Physical>();
+                foreach (PhysicalDocument physicalDocument in applicationInput.businessInfo.documents.physicalDocument)
+                {
+                    createAccountRequest.business.documents.physicalDocuments.Add(
+                        new Models.CreateAccountRequest.Physical()
+                        {
+                            type = physicalDocument.type,
+                            value = physicalDocument.value
+                        });
+                }
             }
 
-            foreach (VirtualDocument virtualDocument in applicationInput.businessInfo.documents.virtualDocument)
+            if (applicationInput.businessInfo.documents.virtualDocument != null)
             {
-                createAccountRequest.business.documents.virtualDocuments.Add(
-                    new Models.CreateAccountRequest.Virtual()
-                    {
-                        type = virtualDocument.type,
-                        value = virtualDocument.value,
-                        exp = virtualDocument.exp,
-                        issuer = virtualDocument.issuer
-                    });
+                createAccountRequest.business.documents.virtualDocuments = new List<Models.CreateAccountRequest.Virtual>();
+                foreach (VirtualDocument virtualDocument in applicationInput.businessInfo.documents.virtualDocument)
+                {
+                    createAccountRequest.business.documents.virtualDocuments.Add(
+                        new Models.CreateAccountRequest.Virtual()
+                        {
+                            type = virtualDocument.type,
+                            value = virtualDocument.value,
+                            exp = virtualDocument.exp,
+                            issuer = virtualDocument.issuer
+                        });
+                }
             }
 
             ResponseWrapper responseWrapperCreateAccount = await flowFinanceAPI.CreateAccount(createAccountRequest);
@@ -525,8 +532,7 @@ namespace FlowFinance.Services
                     },
                     documents = new Models.CreatePersonRequest.Documents
                     {
-                        physicalDocuments = new List<Models.CreatePersonRequest.Physical>(),
-                        virtualDocuments = new List<Models.CreatePersonRequest.Virtual>()
+
                     },
                     first_name = applicationInput.personalInfo.firstName,
                     last_name = applicationInput.personalInfo.lastName,
@@ -535,26 +541,34 @@ namespace FlowFinance.Services
                     pep = applicationInput.personalInfo.pep
                 };
 
-                foreach (PhysicalDocument physicalDocument in applicationInput.personalInfo.documents.physicalDocument)
+                if (applicationInput.personalInfo.documents.physicalDocument != null)
                 {
-                    createPersonRequest.documents.physicalDocuments.Add(
-                        new Models.CreatePersonRequest.Physical()
-                        {
-                            type = physicalDocument.type,
-                            value = physicalDocument.value
-                        });
+                    createPersonRequest.documents.physicalDocuments = new List<Models.CreatePersonRequest.Physical>();
+                    foreach (PhysicalDocument physicalDocument in applicationInput.personalInfo.documents.physicalDocument)
+                    {
+                        createPersonRequest.documents.physicalDocuments.Add(
+                            new Models.CreatePersonRequest.Physical()
+                            {
+                                type = physicalDocument.type,
+                                value = physicalDocument.value
+                            });
+                    }
                 }
 
-                foreach (VirtualDocument virtualDocument in applicationInput.personalInfo.documents.virtualDocument)
+                if (applicationInput.personalInfo.documents.virtualDocument != null)
                 {
-                    createPersonRequest.documents.virtualDocuments.Add(
-                        new Models.CreatePersonRequest.Virtual()
-                        {
-                            type = virtualDocument.type,
-                            value = virtualDocument.value,
-                            exp = virtualDocument.exp,
-                            issuer = virtualDocument.issuer
-                        });
+                    createPersonRequest.documents.virtualDocuments = new List<Models.CreatePersonRequest.Virtual>();
+                    foreach (VirtualDocument virtualDocument in applicationInput.personalInfo.documents.virtualDocument)
+                    {
+                        createPersonRequest.documents.virtualDocuments.Add(
+                            new Models.CreatePersonRequest.Virtual()
+                            {
+                                type = virtualDocument.type,
+                                value = virtualDocument.value,
+                                exp = virtualDocument.exp,
+                                issuer = virtualDocument.issuer
+                            });
+                    }
                 }
 
                 responseWrapperCreatePerson = await flowFinanceAPI.CreatePerson(createPersonRequest, accountId);

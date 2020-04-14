@@ -112,7 +112,7 @@ input ContactInfoInput {
 
 input DocumentsInput {
 	physicalDocument: [PhysicalDocumentInput]!
-	virtualDocument: [VirtualDocumentInput]!
+	virtualDocument: [VirtualDocumentInput]
 }
 
 input PhysicalDocumentInput {

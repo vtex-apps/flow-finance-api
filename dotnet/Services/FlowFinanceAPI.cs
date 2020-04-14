@@ -45,8 +45,8 @@ namespace FlowFinance.Services
         /// <returns></returns>
         public async Task<ResponseWrapper> SendRequest(HttpMethod method, string endpoint, string message = null, string accountId = null)
         {
-            Console.WriteLine($" <=]|[=> SendRequest :{method.ToString()}: :{endpoint}: <=]|[=> ");
-            Console.WriteLine($" <=]|[=> :{message}: <=]|[=> ");
+            //Console.WriteLine($" <=]|[=> SendRequest :{method.ToString()}: :{endpoint}: <=]|[=> ");
+            //Console.WriteLine($" <=]|[=> :{message}: <=]|[=> ");
 
             ResponseWrapper responseWrapper = new ResponseWrapper();
             string responseContent = string.Empty;
