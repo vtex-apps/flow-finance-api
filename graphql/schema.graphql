@@ -16,6 +16,7 @@ type PersonalInfo {
 	documents: Documents!
 	contactInfo: ContactInfo!
 	accountOpener: Boolean!
+	address: Address!
 }
 
 type Address {
@@ -88,6 +89,7 @@ input PersonalInfoInput {
 	documents: DocumentsInput!
 	contactInfo: ContactInfoInput!
 	accountOpener: Boolean!
+	address: AddressInput!
 }
 
 input TOSInput {

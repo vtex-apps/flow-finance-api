@@ -164,7 +164,7 @@
             var client = _clientFactory.CreateClient();
             var response = await client.SendAsync(request);
             string responseContent = await response.Content.ReadAsStringAsync();
-            Console.WriteLine($"Response = {responseContent}");
+            //Console.WriteLine($"Response = {responseContent}");
 
             return JsonConvert.DeserializeObject<MerchantSettings>(responseContent);
         }

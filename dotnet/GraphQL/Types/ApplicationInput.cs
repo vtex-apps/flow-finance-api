@@ -24,6 +24,7 @@ namespace FlowFinance.GraphQL.Types
         public Documents documents { get; set; }
         public ContactInfo contactInfo { get; set; }
         public bool accountOpener { get; set; }
+        public Address address { get; set; }
     }
 
     public class Address

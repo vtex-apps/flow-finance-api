@@ -45,8 +45,8 @@ namespace FlowFinance.Services
         /// <returns></returns>
         public async Task<ResponseWrapper> SendRequest(HttpMethod method, string endpoint, string message = null, string accountId = null)
         {
-            //Console.WriteLine($" <=]|[=> SendRequest :{method.ToString()}: :{endpoint}: <=]|[=> ");
-            //Console.WriteLine($" <=]|[=> :{message}: <=]|[=> ");
+            Console.WriteLine($" <=]|[=> SendRequest :{method.ToString()}: :{endpoint}: <=]|[=> ");
+            Console.WriteLine($" <=]|[=> :{message}: <=]|[=> ");
 
             ResponseWrapper responseWrapper = new ResponseWrapper();
             string responseContent = string.Empty;
@@ -99,7 +99,7 @@ namespace FlowFinance.Services
                     responseContent = await responseMessage.Content.ReadAsStringAsync();
 
                     //Console.WriteLine($" <=]|[=> Response : {responseMessage.ReasonPhrase} : {responseMessage.Content.Headers} : {responseMessage.Headers} : {responseMessage.TrailingHeaders} : {responseContent} <=]|[=> ");
-                    //Console.WriteLine($" <=]|[=> Response : {responseMessage.ReasonPhrase} :|: {responseContent} <=]|[=> ");
+                    Console.WriteLine($" <=]|[=> Response : {responseMessage.ReasonPhrase} :|: {responseContent} <=]|[=> ");
 
                     responseWrapper.success = responseMessage.IsSuccessStatusCode;
                     responseWrapper.responseMessage = responseContent;

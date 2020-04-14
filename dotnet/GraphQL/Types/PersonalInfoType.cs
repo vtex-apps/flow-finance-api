@@ -21,6 +21,7 @@ namespace FlowFinance.GraphQL.Types
             Field(b => b.idNumber).Description("Personal Id");
             Field(b => b.maritalStatus).Description("Personal Marital Status");
             Field(b => b.pep).Description("Personal Exposed Person");
+            Field<AddressType>("address");
         }
     }
 }
