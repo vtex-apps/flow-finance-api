@@ -28,6 +28,7 @@
 
         public const string Success = "[Success]";
 
+        public const string FORWARDED_HEADER = "X-Forwarded-For";
         public const string APPLICATION_JSON = "application/json";
         public const string HEADER_VTEX_CREDENTIAL = "X-Vtex-Credential";
         public const string AUTHORIZATION_HEADER_NAME = "Authorization";

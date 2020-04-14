@@ -37,7 +37,7 @@ type ContactInfo {
 
 type Documents {
 	physicalDocument: [PhysicalDocument]!
-	virtualDocument: [VirtualDocument]!
+	virtualDocument: [VirtualDocument]
 }
 
 type PhysicalDocument {
@@ -53,8 +53,6 @@ type VirtualDocument {
 }
 
 type TOS {
-	date: String!
-	ip: String!
 	userAgent: String!
 }
 
@@ -93,8 +91,6 @@ input PersonalInfoInput {
 }
 
 input TOSInput {
-	date: String!
-	ip: String!
 	userAgent: String!
 }
 

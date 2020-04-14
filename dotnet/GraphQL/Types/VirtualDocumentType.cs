@@ -13,10 +13,10 @@ namespace FlowFinance.GraphQL.Types
         {
             Name = "VirtualDocument";
 
-            Field(b => b.type).Description("Virtual Documents Type");
-            Field(b => b.value).Description("Virtual Documents Value");
-            Field(b => b.exp).Description("Virtual Documents Exp");
-            Field(b => b.issuer).Description("Virtual Documents Issuer");
+            Field(b => b.type, nullable: true).Description("Virtual Documents Type");
+            Field(b => b.value, nullable: true).Description("Virtual Documents Value");
+            Field(b => b.exp, nullable: true).Description("Virtual Documents Exp");
+            Field(b => b.issuer, nullable: true).Description("Virtual Documents Issuer");
         }
     }
 }

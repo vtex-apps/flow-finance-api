@@ -13,8 +13,8 @@ namespace FlowFinance.GraphQL.Types
         {
             Name = "TosAcceptance";
 
-            Field(b => b.date).Description("TOS Acceptance Date");
-            Field(b => b.ip).Description("TOS Acceptance IP");
+            //Field(b => b.date).Description("TOS Acceptance Date");
+            //Field(b => b.ip).Description("TOS Acceptance IP");
             Field(b => b.userAgent).Description("TOS User Agent");
         }
     }

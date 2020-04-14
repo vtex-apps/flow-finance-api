@@ -443,12 +443,6 @@ namespace FlowFinance.Services
 
             Models.CreateAccountRequest.RootObject createAccountRequest = new Models.CreateAccountRequest.RootObject
             {
-                //tos_acceptance = new Models.CreateAccountRequest.TosAcceptance
-                //{
-                //    date = DateTime.Parse(applicationInput.tosAcceptance.date),
-                //    ip = applicationInput.tosAcceptance.ip,
-                //    user_agent = applicationInput.tosAcceptance.userAgent
-                //},
                 business = new Models.CreateAccountRequest.Business
                 {
                     address = new Models.CreateAccountRequest.Address
@@ -572,8 +566,8 @@ namespace FlowFinance.Services
                     {
                         tos_acceptance = new Models.UpdateAccountRequest.TosAcceptance
                         {
-                            date = DateTime.Parse(applicationInput.tosAcceptance.date),
-                            ip = applicationInput.tosAcceptance.ip,
+                            date = DateTime.Now,
+                            ip = await GetShopperIp(),
                             user_agent = applicationInput.tosAcceptance.userAgent
                         },
                         business = new Models.UpdateAccountRequest.Business
@@ -830,6 +824,13 @@ namespace FlowFinance.Services
             string responseContent = await responseMessage.Content.ReadAsStringAsync();
 
             return $"[{responseMessage.StatusCode}] {responseContent}";
+        }
+
+        public async Task<string> GetShopperIp()
+        {
+            string proxyHeader = _httpContextAccessor.HttpContext.Request.Headers[FlowFinanceConstants.FORWARDED_HEADER];
+            string[] addressArray = proxyHeader.Split(',');
+            return addressArray[0];
         }
     }
 }

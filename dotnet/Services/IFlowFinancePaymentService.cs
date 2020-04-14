@@ -35,5 +35,6 @@ namespace FlowFinance.Services
 
         Task<IList<FlowFinanceShopper>> ListShoppers();
         Task<string> SendEmail(string to, MailTemplateType templateType);
+        Task<string> GetShopperIp();
     }
 }

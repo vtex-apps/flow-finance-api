@@ -13,7 +13,6 @@
     public class RoutesController : Controller
     {
         private readonly IFlowFinancePaymentService _flowFinancePaymentService;
-        private const string FORWARDED_HEADER = "X-Forwarded-For";
 
         public RoutesController(IFlowFinancePaymentService flowFinancePaymentService)
         {
@@ -150,7 +149,7 @@
                             {
                                 date = DateTime.Now,
                                 userAgent = inboundRequestBody.userAgent,
-                                ip = HttpContext.Request.Headers[FORWARDED_HEADER]
+                                ip = await this._flowFinancePaymentService.GetShopperIp()
                             }
                         };
 

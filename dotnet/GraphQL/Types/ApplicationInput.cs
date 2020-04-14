@@ -67,8 +67,8 @@ namespace FlowFinance.GraphQL.Types
 
     public class TOS
     {
-        public string date { get; set; }
-        public string ip { get; set; }
+        //public string date { get; set; }
+        //public string ip { get; set; }
         public string userAgent { get; set; }
     }
 
