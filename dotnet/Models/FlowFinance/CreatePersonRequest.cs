@@ -27,7 +27,9 @@ namespace FlowFinance.Models.CreatePersonRequest
     {
         public string value { get; set; }
         public string type { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string exp { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string issuer { get; set; }
     }
 

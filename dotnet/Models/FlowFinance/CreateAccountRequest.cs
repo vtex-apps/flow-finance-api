@@ -33,7 +33,9 @@ namespace FlowFinance.Models.CreateAccountRequest
     {
         public string value { get; set; }
         public string type { get; set; }    // ['CNH', 'RG', 'CONTRATO-SOCIAL', 'CNPJ']
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string exp { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string issuer { get; set; }
     }
 
