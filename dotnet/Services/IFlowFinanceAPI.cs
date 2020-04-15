@@ -22,5 +22,7 @@ namespace FlowFinance.Services
         Task<ResponseWrapper> UpdateAccount(Models.UpdateAccountRequest.RootObject updateAccountRequest, int accountId);
         Task<ResponseWrapper> RetrieveLoanById(string loanId, int accountId);
         Task<ResponseWrapper> DeleteWebhookEndpoint(int webhookId);
+        Task<ResponseWrapper> DeleteAccount(int accountId);
+        Task<ResponseWrapper> DeletePerson(int accountId, int personId);
     }
 }

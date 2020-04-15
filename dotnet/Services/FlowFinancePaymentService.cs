@@ -614,19 +614,44 @@ namespace FlowFinance.Services
                     };
 
                     responseWrapperUpdateAccount = await flowFinanceAPI.UpdateAccount(updateAccountRequest, accountId);
-
-                    // Save shopper in vbase
-                    FlowFinanceShopper shopper = new FlowFinanceShopper
+                    if (responseWrapperUpdateAccount.success)
                     {
-                        accountId = createPersonResponse.data.account_id.ToString(), // accountId.ToString(),
-                        email = createPersonResponse.data.contact_info.email, // applicationInput.personalInfo.contactInfo.email,
-                        createdAt = createPersonResponse.data.created_at,
-                        firstName = createPersonResponse.data.first_name,
-                        lastName = createPersonResponse.data.last_name,
-                        idNumber = createPersonResponse.data.id_number
-                    };
+                        // Save shopper in vbase
+                        FlowFinanceShopper shopper = new FlowFinanceShopper
+                        {
+                            accountId = createPersonResponse.data.account_id.ToString(), // accountId.ToString(),
+                            email = createPersonResponse.data.contact_info.email, // applicationInput.personalInfo.contactInfo.email,
+                            createdAt = createPersonResponse.data.created_at,
+                            firstName = createPersonResponse.data.first_name,
+                            lastName = createPersonResponse.data.last_name,
+                            idNumber = createPersonResponse.data.id_number
+                        };
 
-                    await this.AppendFlowFinanceShopper(shopper);
+                        await this.AppendFlowFinanceShopper(shopper);
+                    }
+                    else
+                    {
+                        ResponseWrapper responseWrapperDeleteAccount = await flowFinanceAPI.DeleteAccount(accountId);
+                        if (!responseWrapperDeleteAccount.success)
+                        {
+                            Console.WriteLine($"Failed to remove account: {responseWrapperDeleteAccount.errorMessage}");
+                        }
+
+                        ResponseWrapper responseWrapperDeletePerson = await flowFinanceAPI.DeletePerson(accountId, createPersonResponse.data.id);
+                        if (!responseWrapperDeletePerson.success)
+                        {
+                            Console.WriteLine($"Failed to remove person: {responseWrapperDeletePerson.errorMessage}");
+                        }
+                    }
+                }
+                else
+                {
+                    // If the account was created, but the person was not, delete the account
+                    ResponseWrapper responseWrapperDeleteAccount = await flowFinanceAPI.DeleteAccount(accountId);
+                    if(!responseWrapperDeleteAccount.success)
+                    {
+                        Console.WriteLine($"Failed to remove account: {responseWrapperDeleteAccount.errorMessage}");
+                    }
                 }
             }
 
@@ -842,9 +867,18 @@ namespace FlowFinance.Services
 
         public async Task<string> GetShopperIp()
         {
+            string retval = string.Empty;
             string proxyHeader = _httpContextAccessor.HttpContext.Request.Headers[FlowFinanceConstants.FORWARDED_HEADER];
-            string[] addressArray = proxyHeader.Split(',');
-            return addressArray[0];
+            if (!string.IsNullOrEmpty(proxyHeader))
+            {
+                string[] addressArray = proxyHeader.Split(',');
+                if(addressArray.Count() > 0)
+                {
+                    retval = addressArray[0];
+                }
+            }
+
+            return retval;
         }
     }
 }

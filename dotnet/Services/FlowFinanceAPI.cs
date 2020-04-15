@@ -513,6 +513,51 @@ namespace FlowFinance.Services
         }
 
         /// <summary>
+        /// Delete an account by id.
+        /// DELETE /api/v1/accounts/{account-id}
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <returns></returns>
+        public async Task<ResponseWrapper> DeleteAccount(int accountId)
+        {
+            ResponseWrapper responseWrapper = new ResponseWrapper();
+
+            try
+            {
+                responseWrapper = await SendRequest(HttpMethod.Delete, $"{FlowFinanceConstants.Accounts}/{accountId}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"DeleteAccount Error: {ex.Message} InnerException: {ex.InnerException} StackTrace: {ex.StackTrace}");
+            }
+
+            return responseWrapper;
+        }
+
+        /// <summary>
+        /// Delete a person.
+        /// DELETE /api/v1/accounts/{account-id}/persons/{person-id}
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <param name="personId"></param>
+        /// <returns></returns>
+        public async Task<ResponseWrapper> DeletePerson(int accountId, int personId)
+        {
+            ResponseWrapper responseWrapper = new ResponseWrapper();
+
+            try
+            {
+                responseWrapper = await SendRequest(HttpMethod.Delete, $"{FlowFinanceConstants.Accounts}/{accountId}/{FlowFinanceConstants.Persons}/{personId}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"DeletePerson Error: {ex.Message} InnerException: {ex.InnerException} StackTrace: {ex.StackTrace}");
+            }
+
+            return responseWrapper;
+        }
+
+        /// <summary>
         /// Generate token pair given username and password in the 'Authorization' header
         /// POST /api/v1/oauth/login
         /// </summary>
