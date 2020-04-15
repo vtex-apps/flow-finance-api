@@ -541,7 +541,7 @@ namespace FlowFinance.Services
         /// <param name="accountId"></param>
         /// <param name="personId"></param>
         /// <returns></returns>
-        public async Task<ResponseWrapper> DeletePerson(int accountId, int personId)
+        public async Task<ResponseWrapper> DeletePerson(int accountId, string personId)
         {
             ResponseWrapper responseWrapper = new ResponseWrapper();
 

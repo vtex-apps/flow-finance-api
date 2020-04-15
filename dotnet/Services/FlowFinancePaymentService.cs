@@ -637,7 +637,7 @@ namespace FlowFinance.Services
                             Console.WriteLine($"Failed to remove account: {responseWrapperDeleteAccount.errorMessage}");
                         }
 
-                        ResponseWrapper responseWrapperDeletePerson = await flowFinanceAPI.DeletePerson(accountId, createPersonResponse.data.id);
+                        ResponseWrapper responseWrapperDeletePerson = await flowFinanceAPI.DeletePerson(accountId, createPersonResponse.data.id.ToString());
                         if (!responseWrapperDeletePerson.success)
                         {
                             Console.WriteLine($"Failed to remove person: {responseWrapperDeletePerson.errorMessage}");
@@ -863,6 +863,24 @@ namespace FlowFinance.Services
             string responseContent = await responseMessage.Content.ReadAsStringAsync();
 
             return $"[{responseMessage.StatusCode}] {responseContent}";
+        }
+
+        public async Task<string> DeleteAccount(int accountId)
+        {
+            MerchantSettings merchantSettings = await this._paymentRequestRepository.GetMerchantSettings();
+            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings);
+            ResponseWrapper responseWrapper = await flowFinanceAPI.DeleteAccount(accountId);
+
+            return responseWrapper.responseMessage;
+        }
+
+        public async Task<string> DeletePerson(int accountId, string personId)
+        {
+            MerchantSettings merchantSettings = await this._paymentRequestRepository.GetMerchantSettings();
+            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings);
+            ResponseWrapper responseWrapper = await flowFinanceAPI.DeletePerson(accountId, personId);
+
+            return responseWrapper.responseMessage;
         }
 
         public async Task<string> GetShopperIp()

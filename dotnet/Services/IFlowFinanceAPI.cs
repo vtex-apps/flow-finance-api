@@ -23,6 +23,6 @@ namespace FlowFinance.Services
         Task<ResponseWrapper> RetrieveLoanById(string loanId, int accountId);
         Task<ResponseWrapper> DeleteWebhookEndpoint(int webhookId);
         Task<ResponseWrapper> DeleteAccount(int accountId);
-        Task<ResponseWrapper> DeletePerson(int accountId, int personId);
+        Task<ResponseWrapper> DeletePerson(int accountId, string personId);
     }
 }

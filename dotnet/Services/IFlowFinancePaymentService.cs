@@ -34,6 +34,8 @@ namespace FlowFinance.Services
         Task<string> InitWebhooks(string siteRoot);
 
         Task<IList<FlowFinanceShopper>> ListShoppers();
+        Task<string> DeleteAccount(int accountId);
+        Task<string> DeletePerson(int accountId, string personId);
         Task<string> SendEmail(string to, MailTemplateType templateType);
         Task<string> GetShopperIp();
     }

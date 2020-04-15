@@ -286,6 +286,20 @@
             return Json(await this._flowFinancePaymentService.RetrieveLoanById(loanId, accountId));
         }
 
+        public async Task<IActionResult> DeleteAccount(int accountId)
+        {
+            Console.WriteLine($"-> DeleteAccount {accountId} <-");
+            Response.Headers.Add("Cache-Control", "private");
+            return Json(await this._flowFinancePaymentService.DeleteAccount(accountId));
+        }
+
+        public async Task<IActionResult> DeletePerson(int accountId, string personId)
+        {
+            Console.WriteLine($"-> DeletePerson {personId} <-");
+            Response.Headers.Add("Cache-Control", "private");
+            return Json(await this._flowFinancePaymentService.DeletePerson(accountId, personId));
+        }
+
         public JsonResult PaymentMethods()
         {
             PaymentMethods methods = new PaymentMethods();

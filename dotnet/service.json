@@ -58,11 +58,11 @@
     },
     "listAccounts": {
       "path": "/_v/api/connectors/flow-finance/list-accounts/:page/:limit",
-      "public": true
+      "public": false
     },
     "listPersons": {
       "path": "/_v/api/connectors/flow-finance/list-persons/:accountId",
-      "public": true
+      "public": false
     },
     "createWebhook": {
       "path": "/_v/api/connectors/flow-finance/create-webhook",
@@ -74,7 +74,7 @@
     },
     "listShoppers": {
       "path": "/_v/api/connectors/flow-finance/list-shoppers",
-      "public": true
+      "public": false
     },
     "signLoan": {
       "path": "/_v/api/connectors/flow-finance/sign-loan/:loanId/:accountId",
@@ -82,15 +82,23 @@
     },
     "retrieveLoanById": {
       "path": "/_v/api/connectors/flow-finance/view-loan/:loanId/:accountId",
-      "public": true
+      "public": false
     },
     "deleteWebhook": {
       "path": "/_v/api/connectors/flow-finance/delete-webhook/:webhookId",
-      "public": true
+      "public": false
     },
     "initWebhooks": {
       "path": "/_v/api/connectors/flow-finance/init-webhooks/:siteRoot",
       "public": true
+    },
+    "deleteAccount": {
+      "path": "/_v/api/connectors/flow-finance/delete-account/:accountId",
+      "public": false
+    },
+    "deletePerson": {
+      "path": "/_v/api/connectors/flow-finance/delete-person/:accountId/:personId",
+      "public": false
     }
   },
     "events": {
