@@ -671,57 +671,101 @@ namespace FlowFinance.Services
             return deleteWebhookResponse;
         }
 
-        public async Task<string> InitWebhooks(string siteRoot)
+        public async Task<string> InitWebhooks()
         {
             string initWebhookResponse = string.Empty;
-            MerchantSettings merchantSettings = await this._paymentRequestRepository.GetMerchantSettings();
-            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings);
-            ResponseWrapper responseWrapper = await flowFinanceAPI.RetrieveWebhookEndpoints();
-            if (responseWrapper.success)
+            string siteRoot = this._httpContextAccessor.HttpContext.Request.Headers[FlowFinanceConstants.FORWARDED_HOST].ToString();
+            if (string.IsNullOrEmpty(siteRoot))
             {
-                StringBuilder sb = new StringBuilder();
-                Models.RetrieveWebhookEndpointsResponse.RootObject retrieveWebhookEndpointsResponse = (Models.RetrieveWebhookEndpointsResponse.RootObject)responseWrapper.responseObject;
-                foreach(Models.RetrieveWebhookEndpointsResponse.Datum webhook in retrieveWebhookEndpointsResponse.data)
+                initWebhookResponse = $"{FlowFinanceConstants.FORWARDED_HOST} is Empty";
+            }
+            else
+            {
+                MerchantSettings merchantSettings = await this._paymentRequestRepository.GetMerchantSettings();
+                IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings);
+                ResponseWrapper responseWrapper = await flowFinanceAPI.RetrieveWebhookEndpoints();
+                if (responseWrapper.success)
                 {
-                    responseWrapper = await flowFinanceAPI.DeleteWebhookEndpoint(webhook.id);
-                    if(responseWrapper.success)
+                    StringBuilder sb = new StringBuilder();
+                    Models.RetrieveWebhookEndpointsResponse.RootObject retrieveWebhookEndpointsResponse = (Models.RetrieveWebhookEndpointsResponse.RootObject)responseWrapper.responseObject;
+                    foreach (Models.RetrieveWebhookEndpointsResponse.Datum webhook in retrieveWebhookEndpointsResponse.data)
                     {
-                        sb.AppendLine($"Webhook {webhook.id} Deleted. {responseWrapper.responseMessage}");
+                        responseWrapper = await flowFinanceAPI.DeleteWebhookEndpoint(webhook.id);
+                        if (responseWrapper.success)
+                        {
+                            sb.AppendLine($"Webhook {webhook.id} Deleted. {responseWrapper.responseMessage}");
+                        }
+                        else
+                        {
+                            sb.AppendLine($"Webhook {webhook.id} Error. {responseWrapper.errorMessage}");
+                        }
                     }
-                    else
-                    {
-                        sb.AppendLine($"Webhook {webhook.id} Error. {responseWrapper.errorMessage}");
-                    }
-                }
 
-                Models.CreateWebhookEndpointRequest.RootObject createWebhookEndpointRequest = new Models.CreateWebhookEndpointRequest.RootObject
-                {
-                    events = new List<string>
+                    Models.CreateWebhookEndpointRequest.RootObject createWebhookEndpointRequest = new Models.CreateWebhookEndpointRequest.RootObject
+                    {
+                        events = new List<string>
                     {
                         FlowFinanceConstants.WebHookNotification.AccountUpdated,
                         FlowFinanceConstants.WebHookNotification.AccountCreated
                     },
-                    url = $"https://{siteRoot}/_v/api/connectors/flow-finance/callback"
-                };
+                        url = $"https://{siteRoot}/_v/api/connectors/flow-finance/callback"
+                    };
 
-                responseWrapper = await flowFinanceAPI.CreateWebhookEndpoint(createWebhookEndpointRequest);
-                if (responseWrapper.success)
-                {
-                    sb.AppendLine($"Webhook Created. {responseWrapper.responseMessage}");
+                    responseWrapper = await flowFinanceAPI.CreateWebhookEndpoint(createWebhookEndpointRequest);
+                    if (responseWrapper.success)
+                    {
+                        sb.AppendLine($"Webhook Created. {responseWrapper.responseMessage}");
+                    }
+                    else
+                    {
+                        sb.AppendLine($"Webhook Creation Error. {responseWrapper.errorMessage}");
+                    }
+
+                    initWebhookResponse = sb.ToString();
                 }
                 else
                 {
-                    sb.AppendLine($"Webhook Creation Error. {responseWrapper.errorMessage}");
+                    initWebhookResponse = $"Retrieve Error: {responseWrapper.errorMessage}";
                 }
-
-                initWebhookResponse = sb.ToString();
-            }
-            else
-            {
-                initWebhookResponse = $"Retrieve Error: {responseWrapper.errorMessage}";
             }
 
             return initWebhookResponse;
+        }
+
+        public async Task<string> InitConfiguration()
+        {
+            string retval = string.Empty;
+            string jsonSerializedOrderConfig = await this._paymentRequestRepository.GetOrderConfiguration();
+            if(string.IsNullOrEmpty(jsonSerializedOrderConfig))
+            {
+                retval = "Could not load Order Configuration.";
+            }
+            else
+            {
+                dynamic orderConfig = JsonConvert.DeserializeObject(jsonSerializedOrderConfig);
+                OrderConfigurationApps apps = new OrderConfigurationApps
+                {
+                    apps = new List<App>
+                    {
+                        new App
+                        {
+                            fields = new List<string>
+                            {
+                                FlowFinanceConstants.CustomTokenField
+                            },
+                            id = FlowFinanceConstants.CustomTokenId
+                        }
+                    }
+                };
+
+                orderConfig.apps = apps;
+
+                jsonSerializedOrderConfig = JsonConvert.SerializeObject(orderConfig);
+                bool success = await this._paymentRequestRepository.SetOrderConfiguration(jsonSerializedOrderConfig);
+                retval = success.ToString();
+            }
+
+            return retval;
         }
 
         public async Task<FlowFinanceShopper> GetFlowFinanceShopperByEmail(string email)

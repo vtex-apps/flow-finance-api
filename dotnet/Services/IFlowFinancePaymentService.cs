@@ -31,7 +31,8 @@ namespace FlowFinance.Services
         Task<Models.LoanPreviewResponse.RootObject> LoanPreview(int amount, int accountId);
         Task<Models.RetrieveLoanByIdResponse.RootObject> RetrieveLoanById(string loanId, int accountId);
         Task<string> DeleteWebhookEndpoint(int webhookId);
-        Task<string> InitWebhooks(string siteRoot);
+        Task<string> InitWebhooks();
+        Task<string> InitConfiguration();
 
         Task<IList<FlowFinanceShopper>> ListShoppers();
         Task<string> DeleteAccount(int accountId);

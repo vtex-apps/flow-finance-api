@@ -21,5 +21,9 @@
         Task<bool> SaveFlowFinanceShoppers(IList<FlowFinanceShopper> shoppers);
 
         Task<OrderInformation> GetOrderInformation(string orderId);
+
+        Task<string> GetOrderConfiguration();
+
+        Task<bool> SetOrderConfiguration(string jsonSerializedOrderConfig);
     }
 }

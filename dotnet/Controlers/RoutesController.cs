@@ -256,9 +256,14 @@
             return Json(await this._flowFinancePaymentService.DeleteWebhookEndpoint(webhookId));
         }
 
-        public async Task<IActionResult> InitWebhooks(string siteRoot)
+        public async Task<IActionResult> InitWebhooks()
         {
-            return Json(await this._flowFinancePaymentService.InitWebhooks(siteRoot));
+            return Json(await this._flowFinancePaymentService.InitWebhooks());
+        }
+
+        public async Task<IActionResult> InitConfiguration()
+        {
+            return Json(await this._flowFinancePaymentService.InitConfiguration());
         }
 
         public async Task<IActionResult> CreateLoan(string offerToken, int accountId)

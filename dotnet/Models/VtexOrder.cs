@@ -317,9 +317,21 @@ namespace FlowFinance.Models.VtexOrder
         public string name { get; set; }
     }
 
+    public class Fields
+    {
+        public string chosenLoanToken { get; set; }
+    }
+
+    public class CustomApp
+    {
+        public Fields fields { get; set; }
+        public string id { get; set; }
+        public int major { get; set; }
+    }
+
     public class CustomData
     {
-        public string offer_token { get; set; }
+        public List<CustomApp> customApps { get; set; }
     }
 
     public class VtexOrder

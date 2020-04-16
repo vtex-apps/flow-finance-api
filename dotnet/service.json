@@ -89,7 +89,11 @@
       "public": false
     },
     "initWebhooks": {
-      "path": "/_v/api/connectors/flow-finance/init-webhooks/:siteRoot",
+      "path": "/_v/api/connectors/flow-finance/init-webhooks",
+      "public": true
+    },
+    "initConfiguration": {
+      "path": "/_v/api/connectors/flow-finance/init-configuration",
       "public": true
     },
     "deleteAccount": {

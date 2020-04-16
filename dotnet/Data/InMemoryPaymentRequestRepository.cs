@@ -88,5 +88,15 @@
         {
             throw new System.NotImplementedException();
         }
+
+        public Task<string> GetOrderConfiguration()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<bool> SetOrderConfiguration(string jsonSerializedOrderConfig)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
