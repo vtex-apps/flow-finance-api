@@ -583,33 +583,6 @@ namespace FlowFinance.Services
                             date = DateTime.Now,
                             ip = await GetShopperIp(),
                             user_agent = applicationInput.tosAcceptance.userAgent
-                        },
-                        business = new Models.UpdateAccountRequest.Business
-                        {
-                            address = new Models.UpdateAccountRequest.Address
-                            {
-                                city = applicationInput.businessInfo.address.city,
-                                country = applicationInput.businessInfo.address.country,
-                                district = applicationInput.businessInfo.address.district,
-                                extra_address_info = applicationInput.businessInfo.address.extraAddressInfo,
-                                postal_code = applicationInput.businessInfo.address.postalCode,
-                                state_code = applicationInput.businessInfo.address.stateCode,
-                                street_name = applicationInput.businessInfo.address.streetName,
-                                street_number = applicationInput.businessInfo.address.streetNumber
-                            },
-                            business_id = applicationInput.businessInfo.businessId,
-                            contact_info = new Models.UpdateAccountRequest.ContactInfo
-                            {
-                                email = applicationInput.businessInfo.contactInfo.email,
-                                phone_number = applicationInput.businessInfo.contactInfo.phoneNumber
-                            },
-                            documents = new Models.UpdateAccountRequest.Documents
-                            {
-                                physicalDocuments = new List<Models.UpdateAccountRequest.Physical>(),
-                                virtualDocuments = new List<Models.UpdateAccountRequest.Virtual>()
-                            },
-                            legal_name = applicationInput.businessInfo.legalName,
-                            name = applicationInput.businessInfo.name
                         }
                     };
 

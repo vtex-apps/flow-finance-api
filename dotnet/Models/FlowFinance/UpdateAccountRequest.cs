@@ -5,6 +5,7 @@ using System.Text;
 
 namespace FlowFinance.Models.UpdateAccountRequest
 {
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class Address
     {
         public string street_name { get; set; }
@@ -17,18 +18,21 @@ namespace FlowFinance.Models.UpdateAccountRequest
         public string extra_address_info { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class ContactInfo
     {
         public string email { get; set; }
         public string phone_number { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class Physical
     {
         public string type { get; set; }
         public string value { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class Virtual
     {
         public string value { get; set; }
@@ -39,6 +43,7 @@ namespace FlowFinance.Models.UpdateAccountRequest
         public string issuer { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class Documents
     {
         [JsonProperty("virtual", NullValueHandling = NullValueHandling.Ignore)]
@@ -48,6 +53,7 @@ namespace FlowFinance.Models.UpdateAccountRequest
         public List<Physical> physicalDocuments { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class Business
     {
         public string business_id { get; set; }
@@ -58,6 +64,7 @@ namespace FlowFinance.Models.UpdateAccountRequest
         public Documents documents { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class TosAcceptance
     {
         public DateTime date { get; set; }
@@ -65,6 +72,7 @@ namespace FlowFinance.Models.UpdateAccountRequest
         public string user_agent { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class RootObject
     {
         public Business business { get; set; }
