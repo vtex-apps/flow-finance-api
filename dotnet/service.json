@@ -8,7 +8,7 @@
       "path": "/_v/api/connectors/flow-finance/print-headers",
       "public": true
     },
-    "inboundAsync": {
+    "inbound": {
       "path": "/_v/api/connectors/flow-finance/payments/:paymentId/inbound/:actiontype",
       "public": true
     },
@@ -16,31 +16,31 @@
       "path": "/_v/api/connectors/flow-finance/payment-methods",
       "public": true
     },
-    "createPaymentAsync": {
+    "createPayment": {
       "path": "/_v/api/connectors/flow-finance/payments",
       "public": true
     },
-    "cancelPaymentAsync": {
+    "cancelPayment": {
       "path": "/_v/api/connectors/flow-finance/payments/:paymentId/cancellations",
       "public": true
     },
-    "capturePaymentAsync": {
+    "capturePayment": {
       "path": "/_v/api/connectors/flow-finance/payments/:paymentId/settlements",
       "public": true
     },
-    "refundPaymentAsync": {
+    "refundPayment": {
       "path": "/_v/api/connectors/flow-finance/payments/:paymentId/refunds",
       "public": true
     },
-    "getPaymentRequestAsync": {
+    "getPaymentRequest": {
       "path": "/_v/api/connectors/flow-finance/payments/:paymentIdentifier/request",
       "public": true
     },
-    "authorizeAsync": {
+    "authorize": {
       "path": "/_v/api/connectors/flow-finance/payments/:paymentIdentifier/auth/:token/:callbackUrl/:orderTotal",
       "public": true
     },
-    "readChargeAsync": {
+    "readCharge": {
       "path": "/_v/api/connectors/flow-finance/payments/:paymentIdentifier/read",
       "public": true
     },
@@ -90,11 +90,11 @@
     },
     "initWebhooks": {
       "path": "/_v/api/connectors/flow-finance/init-webhooks",
-      "public": true
+      "public": false
     },
     "initConfiguration": {
       "path": "/_v/api/connectors/flow-finance/init-configuration",
-      "public": true
+      "public": false
     },
     "deleteAccount": {
       "path": "/_v/api/connectors/flow-finance/delete-account/:accountId",

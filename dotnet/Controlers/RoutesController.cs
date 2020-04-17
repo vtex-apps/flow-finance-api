@@ -25,9 +25,9 @@
         /// </summary>
         /// <param name="createPaymentRequest"></param>
         /// <returns></returns>
-        public async Task<IActionResult> CreatePaymentAsync()
+        public async Task<IActionResult> CreatePayment()
         {
-            //string publicKey = HttpContext.Request.Headers[FlowFinanceConstants.PublicKeyHeader];
+            //Console.WriteLine("-][--][--][--][--][--][--][--][--][--][--][- CreatePaymentAsync -][--][--][--][--][--][--][--][--][--][--][-");
             var bodyAsText = await new System.IO.StreamReader(HttpContext.Request.Body).ReadToEndAsync();
             CreatePaymentRequest createPaymentRequest = JsonConvert.DeserializeObject<CreatePaymentRequest>(bodyAsText);
             var paymentResponse = await this._flowFinancePaymentService.CreatePaymentAsync(createPaymentRequest);
@@ -35,6 +35,7 @@
             Response.Headers.Add("Cache-Control", "private");
 
             return Json(paymentResponse);
+            //return Json("foo");
         }
 
         /// <summary>
@@ -43,7 +44,7 @@
         /// <param name="paymentId">VTEX payment ID from this payment</param>
         /// <param name="cancelPaymentRequest"></param>
         /// <returns></returns>
-        public async Task<IActionResult> CancelPaymentAsync(string paymentId)
+        public async Task<IActionResult> CancelPayment(string paymentId)
         {
             var bodyAsText = await new System.IO.StreamReader(HttpContext.Request.Body).ReadToEndAsync();
             CancelPaymentRequest cancelPaymentRequest = JsonConvert.DeserializeObject<CancelPaymentRequest>(bodyAsText);
@@ -58,7 +59,7 @@
         /// <param name="paymentId">VTEX payment ID from this payment</param>
         /// <param name="capturePaymentRequest"></param>
         /// <returns></returns>
-        public async Task<IActionResult> CapturePaymentAsync(string paymentId)
+        public async Task<IActionResult> CapturePayment(string paymentId)
         {
             var bodyAsText = await new System.IO.StreamReader(HttpContext.Request.Body).ReadToEndAsync();
             CapturePaymentRequest capturePaymentRequest = JsonConvert.DeserializeObject<CapturePaymentRequest>(bodyAsText);
@@ -73,7 +74,7 @@
         /// <param name="paymentId">VTEX payment ID from this payment</param>
         /// <param name="refundPaymentRequest"></param>
         /// <returns></returns>
-        public async Task<IActionResult> RefundPaymentAsync(string paymentId)
+        public async Task<IActionResult> RefundPayment(string paymentId)
         {
             var bodyAsText = await new System.IO.StreamReader(HttpContext.Request.Body).ReadToEndAsync();
             RefundPaymentRequest refundPaymentRequest = JsonConvert.DeserializeObject<RefundPaymentRequest>(bodyAsText);
@@ -87,7 +88,7 @@
         /// </summary>
         /// <param name="paymentIdentifier">Payment GUID</param>
         /// <returns></returns>
-        public async Task<IActionResult> GetPaymentRequestAsync(string paymentIdentifier)
+        public async Task<IActionResult> GetPaymentRequest(string paymentIdentifier)
         {
             var paymentRequest = await this._flowFinancePaymentService.GetCreatePaymentRequestAsync(paymentIdentifier);
 
@@ -102,7 +103,7 @@
         /// <param name="paymentIdentifier">Payment GUID</param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public async Task<IActionResult> ReadChargeAsync(string paymentIdentifier)
+        public async Task<IActionResult> ReadCharge(string paymentIdentifier)
         {
             var paymentRequest = await this._flowFinancePaymentService.ReadChargeAsync(paymentIdentifier);
             Response.Headers.Add("Cache-Control", "private");
@@ -110,7 +111,7 @@
             return Json(paymentRequest);
         }
 
-        public async Task<IActionResult> InboundAsync(string actiontype)
+        public async Task<IActionResult> Inbound(string actiontype)
         {
             Console.WriteLine($"InboundAsync action = {actiontype}");
 
