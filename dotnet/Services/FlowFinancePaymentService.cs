@@ -56,9 +56,13 @@ namespace FlowFinance.Services
             };
 
             OrderInformation orderInformation = await _paymentRequestRepository.GetOrderInformation(createPaymentRequest.orderId);
-            if (string.IsNullOrEmpty(orderInformation.offerToken))
+            if (orderInformation == null)
             {
-                paymentResponse.message = "Missing Offer Token";
+                paymentResponse.message = $"Could not load Order {createPaymentRequest.orderId}";
+            }
+            else if (string.IsNullOrEmpty(orderInformation.offerToken) || string.IsNullOrEmpty(orderInformation.email))
+            {
+                paymentResponse.message = $"Order {createPaymentRequest.orderId} missing data.";
             }
             else
             {

@@ -257,10 +257,13 @@
 
         public async Task<OrderInformation> GetOrderInformation(string orderId)
         {
+            ///http://{{accountName}}.vtexcommercestable.com.br/api/checkout/pvt/orders/order-group/727553409798
+            ///http://{{accountName}}.vtexcommercestable.com.br/api/checkout/pvt/orders/604441449285-01
+
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://{this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_ACCOUNT]}.{ENVIRONMENT}.com.br/api/oms/pvt/orders/{orderId}"),
+                RequestUri = new Uri($"https://{this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_ACCOUNT]}.{ENVIRONMENT}.com.br/api/checkout/pvt/orders/{orderId}-01"),
             };
 
             string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
@@ -273,26 +276,23 @@
             var response = await client.SendAsync(request);
             string responseContent = await response.Content.ReadAsStringAsync();
 
-            if (response.StatusCode == HttpStatusCode.NotFound)
+            OrderInformation orderInformation = null;
+            if (response.IsSuccessStatusCode)
             {
-                return null;
+
+                Models.VtexOrder.VtexOrder vtexOrder = JsonConvert.DeserializeObject<Models.VtexOrder.VtexOrder>(responseContent);
+
+                string chosenLoanToken = vtexOrder.customData.customApps.Where(c => c.id.Equals(FlowFinanceConstants.CustomTokenId))
+                                  .Select(c => c)
+                                  .Where(f => f.fields.Equals(FlowFinanceConstants.CustomTokenField))
+                                  .Select(c => c.fields.chosenLoanToken).FirstOrDefault();
+
+                orderInformation = new OrderInformation
+                {
+                    offerToken = chosenLoanToken,
+                    email = vtexOrder.clientProfileData.email
+                };
             }
-
-            // A helper method is in order for this as it does not return the stack trace etc.
-            response.EnsureSuccessStatusCode();
-
-            Models.VtexOrder.VtexOrder vtexOrder = JsonConvert.DeserializeObject<Models.VtexOrder.VtexOrder>(responseContent);
-
-            string chosenLoanToken = vtexOrder.customData.customApps.Where(c => c.id.Equals(FlowFinanceConstants.CustomTokenId))
-                              .Select(c => c)
-                              .Where(f => f.fields.Equals(FlowFinanceConstants.CustomTokenField))
-                              .Select(c => c.fields.chosenLoanToken).FirstOrDefault();
-
-            OrderInformation orderInformation = new OrderInformation
-            {
-                offerToken = chosenLoanToken,
-                email = vtexOrder.clientProfileData.email
-            };
 
             return orderInformation;
         }
