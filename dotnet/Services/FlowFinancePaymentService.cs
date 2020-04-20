@@ -60,6 +60,10 @@ namespace FlowFinance.Services
             {
                 paymentResponse.message = $"Could not load Order {createPaymentRequest.orderId}";
             }
+            else if(orderInformation.hasError)
+            {
+                paymentResponse.message = $"Could not load Order {createPaymentRequest.orderId} Response Message: {orderInformation.message}";
+            }
             else if (string.IsNullOrEmpty(orderInformation.offerToken) || string.IsNullOrEmpty(orderInformation.email))
             {
                 paymentResponse.message = $"Order {createPaymentRequest.orderId} missing data.";

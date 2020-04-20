@@ -260,38 +260,49 @@
             ///http://{{accountName}}.vtexcommercestable.com.br/api/checkout/pvt/orders/order-group/727553409798
             ///http://{{accountName}}.vtexcommercestable.com.br/api/checkout/pvt/orders/604441449285-01
 
-            var request = new HttpRequestMessage
+            OrderInformation orderInformation = new OrderInformation { hasError = true, message = "Unknown Error." };
+            try
             {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://{this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_ACCOUNT]}.{ENVIRONMENT}.com.br/api/checkout/pvt/orders/{orderId}-01"),
-            };
-
-            string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
-            if (authToken != null)
-            {
-                request.Headers.Add(AUTHORIZATION_HEADER_NAME, authToken);
-            }
-
-            var client = _clientFactory.CreateClient();
-            var response = await client.SendAsync(request);
-            string responseContent = await response.Content.ReadAsStringAsync();
-
-            OrderInformation orderInformation = null;
-            if (response.IsSuccessStatusCode)
-            {
-
-                Models.VtexOrder.VtexOrder vtexOrder = JsonConvert.DeserializeObject<Models.VtexOrder.VtexOrder>(responseContent);
-
-                string chosenLoanToken = vtexOrder.customData.customApps.Where(c => c.id.Equals(FlowFinanceConstants.CustomTokenId))
-                                  .Select(c => c)
-                                  .Where(f => f.fields.Equals(FlowFinanceConstants.CustomTokenField))
-                                  .Select(c => c.fields.chosenLoanToken).FirstOrDefault();
-
-                orderInformation = new OrderInformation
+                var request = new HttpRequestMessage
                 {
-                    offerToken = chosenLoanToken,
-                    email = vtexOrder.clientProfileData.email
+                    Method = HttpMethod.Get,
+                    RequestUri = new Uri($"https://{this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_ACCOUNT]}.{ENVIRONMENT}.com.br/api/checkout/pvt/orders/{orderId}-01"),
                 };
+
+                string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
+                if (authToken != null)
+                {
+                    request.Headers.Add(AUTHORIZATION_HEADER_NAME, authToken);
+                }
+
+                var client = _clientFactory.CreateClient();
+                var response = await client.SendAsync(request);
+                string responseContent = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    orderInformation.hasError = false;
+
+                    Models.VtexOrder.VtexOrder vtexOrder = JsonConvert.DeserializeObject<Models.VtexOrder.VtexOrder>(responseContent);
+
+                    string chosenLoanToken = vtexOrder.customData.customApps.Where(c => c.id.Equals(FlowFinanceConstants.CustomTokenId))
+                                      .Select(c => c)
+                                      .Where(f => f.fields.Equals(FlowFinanceConstants.CustomTokenField))
+                                      .Select(c => c.fields.chosenLoanToken).FirstOrDefault();
+
+                    orderInformation.offerToken = chosenLoanToken;
+                    orderInformation.email = vtexOrder.clientProfileData.email;
+                }
+                else
+                {
+                    orderInformation.hasError = true;
+                    orderInformation.message = response.ReasonPhrase;
+                }
+            }
+            catch(Exception ex)
+            {
+                orderInformation.hasError = true;
+                orderInformation.message = ex.Message;
             }
 
             return orderInformation;

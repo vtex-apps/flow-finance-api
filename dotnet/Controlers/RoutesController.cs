@@ -27,15 +27,20 @@
         /// <returns></returns>
         public async Task<IActionResult> CreatePayment()
         {
-            //Console.WriteLine("-][--][--][--][--][--][--][--][--][--][--][- CreatePaymentAsync -][--][--][--][--][--][--][--][--][--][--][-");
-            var bodyAsText = await new System.IO.StreamReader(HttpContext.Request.Body).ReadToEndAsync();
-            CreatePaymentRequest createPaymentRequest = JsonConvert.DeserializeObject<CreatePaymentRequest>(bodyAsText);
-            var paymentResponse = await this._flowFinancePaymentService.CreatePaymentAsync(createPaymentRequest);
+            try
+            {
+                //Console.WriteLine("-][--][--][--][--][--][--][--][--][--][--][- CreatePaymentAsync -][--][--][--][--][--][--][--][--][--][--][-");
+                var bodyAsText = await new System.IO.StreamReader(HttpContext.Request.Body).ReadToEndAsync();
+                CreatePaymentRequest createPaymentRequest = JsonConvert.DeserializeObject<CreatePaymentRequest>(bodyAsText);
+                var paymentResponse = await this._flowFinancePaymentService.CreatePaymentAsync(createPaymentRequest);
 
-            Response.Headers.Add("Cache-Control", "private");
-
-            return Json(paymentResponse);
-            //return Json("foo");
+                Response.Headers.Add("Cache-Control", "private");
+                return Json(paymentResponse);
+            }
+            catch(Exception ex)
+            {
+                return Json(ex.Message);
+            }
         }
 
         /// <summary>
