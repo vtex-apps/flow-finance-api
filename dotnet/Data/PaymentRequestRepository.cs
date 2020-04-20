@@ -266,7 +266,7 @@
                 var request = new HttpRequestMessage
                 {
                     Method = HttpMethod.Get,
-                    RequestUri = new Uri($"https://{this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_ACCOUNT]}.{ENVIRONMENT}.com.br/api/checkout/pvt/orders/{orderId}-01"),
+                    RequestUri = new Uri($"http://{this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_ACCOUNT]}.{ENVIRONMENT}.com.br/api/checkout/pvt/orders/{orderId}-01"),
                 };
 
                 string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
