@@ -266,13 +266,18 @@
                 var request = new HttpRequestMessage
                 {
                     Method = HttpMethod.Get,
-                    RequestUri = new Uri($"http://{this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_ACCOUNT]}.{ENVIRONMENT}.com.br/api/checkout/pvt/orders/{orderId}-01"),
+                    RequestUri = new Uri($"http://{this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_ACCOUNT]}.{ENVIRONMENT}.com.br/api/checkout/pvt/orders/{orderId}-01")
+                    //RequestUri = new Uri($"https://{this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_ACCOUNT]}.{ENVIRONMENT}.com.br/api/checkout/pvt/orders/order-group/{orderId}")
                 };
 
                 string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
                 if (authToken != null)
                 {
                     request.Headers.Add(AUTHORIZATION_HEADER_NAME, authToken);
+                }
+                else
+                {
+                    Console.WriteLine($"-][- -][-   Authorization Header {HEADER_VTEX_CREDENTIAL} Not Found.   -][- -][-");
                 }
 
                 var client = _clientFactory.CreateClient();
@@ -285,10 +290,13 @@
 
                     Models.VtexOrder.VtexOrder vtexOrder = JsonConvert.DeserializeObject<Models.VtexOrder.VtexOrder>(responseContent);
 
-                    string chosenLoanToken = vtexOrder.customData.customApps.Where(c => c.id.Equals(FlowFinanceConstants.CustomTokenId))
-                                      .Select(c => c)
-                                      .Where(f => f.fields.Equals(FlowFinanceConstants.CustomTokenField))
-                                      .Select(c => c.fields.chosenLoanToken).FirstOrDefault();
+                    //string chosenLoanToken = vtexOrder.customData.customApps.Where(c => c.id.Equals(FlowFinanceConstants.CustomTokenId))
+                    //                  .Select(c => c)
+                    //                  .Where(f => f.fields.Equals(FlowFinanceConstants.CustomTokenField))
+                    //                  .Select(c => c.fields.chosenLoanToken).FirstOrDefault();
+
+                    Models.VtexOrder.CustomApp customApp = vtexOrder.customData.customApps.Where(c => c.id.Equals(FlowFinanceConstants.CustomTokenId)).FirstOrDefault();
+                    string chosenLoanToken = customApp.fields.chosenLoanToken;
 
                     orderInformation.offerToken = chosenLoanToken;
                     orderInformation.email = vtexOrder.clientProfileData.email;
@@ -296,13 +304,14 @@
                 else
                 {
                     orderInformation.hasError = true;
-                    orderInformation.message = response.ReasonPhrase;
+                    //orderInformation.message = $"Reason: '{response.ReasonPhrase}' Has Auth Token? {!string.IsNullOrEmpty(authToken)} [[[{response.Content.Headers}]]] [[[{response.Headers}]]]";
+                    orderInformation.message = $"'{request.RequestUri}' [{response.ReasonPhrase}]";
                 }
             }
             catch(Exception ex)
             {
                 orderInformation.hasError = true;
-                orderInformation.message = ex.Message;
+                orderInformation.message = $"Error: {ex.Message} {ex.InnerException}";
             }
 
             return orderInformation;

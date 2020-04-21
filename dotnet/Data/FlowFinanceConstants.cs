@@ -27,7 +27,7 @@
         public const string Acquirer = "FlowFinance";
 
         public const string CustomTokenField = "chosenLoanToken";
-        public const string CustomTokenId = "flowFinance";
+        public const string CustomTokenId = "flowfinance";
 
         public const string Success = "[Success]";
 

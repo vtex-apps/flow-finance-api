@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace FlowFinance.Models.VtexOrder
 {
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class Total
     {
         public string id { get; set; }
@@ -11,25 +13,29 @@ namespace FlowFinance.Models.VtexOrder
         public decimal value { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class Content
     {
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class ItemAttachment
     {
         public Content content { get; set; }
         public string name { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class Dimension
     {
         public double cubicweight { get; set; }
-        public int height { get; set; }
-        public int length { get; set; }
-        public int weight { get; set; }
-        public int width { get; set; }
+        public double height { get; set; }
+        public double length { get; set; }
+        public double weight { get; set; }
+        public double width { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class AdditionalInfo
     {
         public string brandName { get; set; }
@@ -43,6 +49,7 @@ namespace FlowFinance.Models.VtexOrder
         public string offeringTypeId { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class Item
     {
         public string uniqueId { get; set; }
@@ -73,7 +80,7 @@ namespace FlowFinance.Models.VtexOrder
         public object preSaleDate { get; set; }
         public AdditionalInfo additionalInfo { get; set; }
         public string measurementUnit { get; set; }
-        public int unitMultiplier { get; set; }
+        public double unitMultiplier { get; set; }
         public decimal sellingPrice { get; set; }
         public bool isGift { get; set; }
         public object shippingPrice { get; set; }
@@ -85,6 +92,7 @@ namespace FlowFinance.Models.VtexOrder
         public object parentAssemblyBinding { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class ClientProfileData
     {
         public string id { get; set; }
@@ -104,12 +112,14 @@ namespace FlowFinance.Models.VtexOrder
         public object customerClass { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class RatesAndBenefitsData
     {
         public string id { get; set; }
         public List<object> rateAndBenefitsIdentifiers { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class Address
     {
         public string addressType { get; set; }
@@ -127,6 +137,7 @@ namespace FlowFinance.Models.VtexOrder
         public List<object> geoCoordinates { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class PickupStoreInfo
     {
         public object additionalInfo { get; set; }
@@ -136,6 +147,7 @@ namespace FlowFinance.Models.VtexOrder
         public bool isPickupStore { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class Sla
     {
         public string id { get; set; }
@@ -148,6 +160,7 @@ namespace FlowFinance.Models.VtexOrder
         public object polygonName { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class DeliveryId
     {
         public string courierId { get; set; }
@@ -157,6 +170,7 @@ namespace FlowFinance.Models.VtexOrder
         public string warehouseId { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class LogisticsInfo
     {
         public int itemIndex { get; set; }
@@ -178,6 +192,7 @@ namespace FlowFinance.Models.VtexOrder
         public object polygonName { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class SelectedAddress
     {
         public string addressId { get; set; }
@@ -195,6 +210,7 @@ namespace FlowFinance.Models.VtexOrder
         public List<object> geoCoordinates { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class ShippingData
     {
         public string id { get; set; }
@@ -204,10 +220,12 @@ namespace FlowFinance.Models.VtexOrder
         public List<SelectedAddress> selectedAddresses { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class ConnectorResponses
     {
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class Payment
     {
         public string id { get; set; }
@@ -234,6 +252,7 @@ namespace FlowFinance.Models.VtexOrder
         public ConnectorResponses connectorResponses { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class Transaction
     {
         public bool isActive { get; set; }
@@ -242,16 +261,19 @@ namespace FlowFinance.Models.VtexOrder
         public List<Payment> payments { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class PaymentData
     {
         public List<Transaction> transactions { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class PackageAttachment
     {
         public List<object> packages { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class Seller
     {
         public string id { get; set; }
@@ -259,6 +281,7 @@ namespace FlowFinance.Models.VtexOrder
         public string logo { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class ItemsRemoved
     {
         public string id { get; set; }
@@ -268,6 +291,7 @@ namespace FlowFinance.Models.VtexOrder
         public object unitMultiplier { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class Receipt
     {
         public DateTime date { get; set; }
@@ -275,6 +299,7 @@ namespace FlowFinance.Models.VtexOrder
         public string receipt { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class ChangesData
     {
         public string reason { get; set; }
@@ -285,12 +310,14 @@ namespace FlowFinance.Models.VtexOrder
         public Receipt receipt { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class ChangesAttachment
     {
         public string id { get; set; }
         public List<ChangesData> changesData { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class CurrencyFormatInfo
     {
         public int CurrencyDecimalDigits { get; set; }
@@ -300,6 +327,7 @@ namespace FlowFinance.Models.VtexOrder
         public bool StartsWithCurrencySymbol { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class StorePreferencesData
     {
         public string countryCode { get; set; }
@@ -310,6 +338,7 @@ namespace FlowFinance.Models.VtexOrder
         public string timeZone { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class Marketplace
     {
         public string baseURL { get; set; }
@@ -317,11 +346,13 @@ namespace FlowFinance.Models.VtexOrder
         public string name { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class Fields
     {
         public string chosenLoanToken { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class CustomApp
     {
         public Fields fields { get; set; }
@@ -329,11 +360,13 @@ namespace FlowFinance.Models.VtexOrder
         public int major { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class CustomData
     {
         public List<CustomApp> customApps { get; set; }
     }
 
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class VtexOrder
     {
         public string emailTracked { get; set; }

@@ -66,7 +66,7 @@ namespace FlowFinance.Services
             }
             else if (string.IsNullOrEmpty(orderInformation.offerToken) || string.IsNullOrEmpty(orderInformation.email))
             {
-                paymentResponse.message = $"Order {createPaymentRequest.orderId} missing data.";
+                paymentResponse.message = $"Order {createPaymentRequest.orderId} missing data. Has Token? {!string.IsNullOrEmpty(orderInformation.offerToken)}  Has Email? {!string.IsNullOrEmpty(orderInformation.email)}";
             }
             else
             {
