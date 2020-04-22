@@ -26,11 +26,12 @@
         private const string APPLICATION_JSON = "application/json";
         private const string APP_SETTINGS = "vtex.flow-finance-api";
         private const string ENVIRONMENT = "vtexcommercestable";
+        private const string AUTHORIZATION_HEADER_NAME = "Authorization";
+        private const string VTEX_ID_HEADER_NAME = "VtexIdclientAutCookie";
         private readonly IVtexEnvironmentVariableProvider _environmentVariableProvider;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IHttpClientFactory _clientFactory;
         private readonly string _applicationName;
-        private string AUTHORIZATION_HEADER_NAME;
 
 
         public PaymentRequestRepository(IVtexEnvironmentVariableProvider environmentVariableProvider, IHttpContextAccessor httpContextAccessor, IHttpClientFactory clientFactory)
@@ -46,8 +47,6 @@
 
             this._applicationName =
                 $"{this._environmentVariableProvider.ApplicationVendor}.{this._environmentVariableProvider.ApplicationName}";
-
-            AUTHORIZATION_HEADER_NAME = "Authorization";
         }
 
 
@@ -275,10 +274,37 @@
                 {
                     request.Headers.Add(AUTHORIZATION_HEADER_NAME, authToken);
                 }
-                else
+
+                StringBuilder sb = new StringBuilder();
+                //sb.AppendLine("Request.Cookies: ");
+                //foreach (var cookie in this._httpContextAccessor.HttpContext.Request.Cookies)
+                //{
+                //    //Console.WriteLine($"-][- -][- -][- -][- -][- -] Cookies: '{cookie.Key}: {cookie.Value}' [- -][- -][- -][- -][- -][- -][-");
+                //    sb.AppendLine($"'{cookie.Key}'='{cookie.Value}'");
+                //}
+
+                //sb.AppendLine("Request.Headers: ");
+                //foreach (var header in this._httpContextAccessor.HttpContext.Request.Headers)
+                //{
+                //    //Console.WriteLine($"-][- -][- -][- -][- -][- -] Headers: '{header.Key}: {header.Value}' [- -][- -][- -][- -][- -][- -][-");
+                //    sb.AppendLine($"'{header.Key}'='{header.Value}'");
+                //}
+
+                //sb.AppendLine($"Headers.Cookie: {this._httpContextAccessor.HttpContext.Request.Headers["Cookie"]}");
+
+
+                //var vtexToken = this._httpContextAccessor.HttpContext.Request.Cookies[VTEX_ID_HEADER_NAME];
+                string vtexToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
+                //string vtexToken = this._httpContextAccessor.HttpContext.Request.Headers[VTEX_ID_HEADER_NAME];
+                if (vtexToken != null)
                 {
-                    Console.WriteLine($"-][- -][-   Authorization Header {HEADER_VTEX_CREDENTIAL} Not Found.   -][- -][-");
+                    request.Headers.Add(VTEX_ID_HEADER_NAME, vtexToken);
+                    //Console.WriteLine($"-][- -][- -][- -][- -][- -] '{VTEX_ID_HEADER_NAME}'='{vtexToken}' [- -][- -][- -][- -][- -][- -][-");
                 }
+                //else
+                //{
+                //    Console.WriteLine($"-][- -][- -][- -][- -][- -] '{VTEX_ID_HEADER_NAME}' is Null! [- -][- -][- -][- -][- -][- -][-");
+                //}
 
                 var client = _clientFactory.CreateClient();
                 var response = await client.SendAsync(request);
@@ -304,9 +330,10 @@
                 else
                 {
                     orderInformation.hasError = true;
-                    //orderInformation.message = $"Reason: '{response.ReasonPhrase}' Has Auth Token? {!string.IsNullOrEmpty(authToken)} [[[{response.Content.Headers}]]] [[[{response.Headers}]]]";
-                    orderInformation.message = $"'{request.RequestUri}' [{response.ReasonPhrase}]";
+                    orderInformation.message = $"Reason: '{response.ReasonPhrase}'";
                 }
+
+                //Console.WriteLine($"-][- -][- -][- -][- -][- -] |{sb.ToString()}| [- -][- -][- -][- -][- -][- -][-");
             }
             catch(Exception ex)
             {
