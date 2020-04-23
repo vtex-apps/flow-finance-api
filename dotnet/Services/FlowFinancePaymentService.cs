@@ -39,7 +39,7 @@ namespace FlowFinance.Services
         {
             CreatePaymentResponse paymentResponse = new CreatePaymentResponse
             {
-                status = FlowFinanceConstants.Vtex.Undefined,
+                status = FlowFinanceConstants.Vtex.Denied,
                 acquirer = FlowFinanceConstants.Acquirer,
                 paymentId = createPaymentRequest.paymentId,
                 paymentAppData = new PaymentAppData
@@ -103,7 +103,6 @@ namespace FlowFinance.Services
                     else
                     {
                         paymentResponse.message = responseWrapper.errorMessage;
-                        //paymentResponse.status = FlowFinanceConstants.Vtex.Undefined;
                     }
                 }
                 else
