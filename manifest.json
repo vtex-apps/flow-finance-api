@@ -1,7 +1,7 @@
 {
   "name": "flow-finance-api",
   "vendor": "vtex",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "title": "Flow Finance",
   "description": "An integration with Flow Finance payment API",
   "categories": [],
@@ -66,6 +66,19 @@
         "host": "{{account}}.vtexcommercestable.com.br",
         "path": "/api/checkout/pvt/orders/*"
       }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "{{account}}.vtexcommercestable.com.br",
+        "path": "/api/checkout/pvt/configuration/orderForm"
+      }
+    },
+    {
+      "name": "SaveOrderFormConfiguration"
+    },
+    {
+      "name": "AcessaTodosPedidos"
     },
     {
       "name": "outbound-access",
