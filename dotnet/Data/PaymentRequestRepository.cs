@@ -276,35 +276,12 @@
                 }
 
                 StringBuilder sb = new StringBuilder();
-                //sb.AppendLine("Request.Cookies: ");
-                //foreach (var cookie in this._httpContextAccessor.HttpContext.Request.Cookies)
-                //{
-                //    //Console.WriteLine($"-][- -][- -][- -][- -][- -] Cookies: '{cookie.Key}: {cookie.Value}' [- -][- -][- -][- -][- -][- -][-");
-                //    sb.AppendLine($"'{cookie.Key}'='{cookie.Value}'");
-                //}
 
-                //sb.AppendLine("Request.Headers: ");
-                //foreach (var header in this._httpContextAccessor.HttpContext.Request.Headers)
-                //{
-                //    //Console.WriteLine($"-][- -][- -][- -][- -][- -] Headers: '{header.Key}: {header.Value}' [- -][- -][- -][- -][- -][- -][-");
-                //    sb.AppendLine($"'{header.Key}'='{header.Value}'");
-                //}
-
-                //sb.AppendLine($"Headers.Cookie: {this._httpContextAccessor.HttpContext.Request.Headers["Cookie"]}");
-
-
-                //var vtexToken = this._httpContextAccessor.HttpContext.Request.Cookies[VTEX_ID_HEADER_NAME];
                 string vtexToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
-                //string vtexToken = this._httpContextAccessor.HttpContext.Request.Headers[VTEX_ID_HEADER_NAME];
                 if (vtexToken != null)
                 {
                     request.Headers.Add(VTEX_ID_HEADER_NAME, vtexToken);
-                    //Console.WriteLine($"-][- -][- -][- -][- -][- -] '{VTEX_ID_HEADER_NAME}'='{vtexToken}' [- -][- -][- -][- -][- -][- -][-");
                 }
-                //else
-                //{
-                //    Console.WriteLine($"-][- -][- -][- -][- -][- -] '{VTEX_ID_HEADER_NAME}' is Null! [- -][- -][- -][- -][- -][- -][-");
-                //}
 
                 var client = _clientFactory.CreateClient();
                 var response = await client.SendAsync(request);
@@ -315,25 +292,31 @@
                     orderInformation.hasError = false;
 
                     Models.VtexOrder.VtexOrder vtexOrder = JsonConvert.DeserializeObject<Models.VtexOrder.VtexOrder>(responseContent);
-
-                    //string chosenLoanToken = vtexOrder.customData.customApps.Where(c => c.id.Equals(FlowFinanceConstants.CustomTokenId))
-                    //                  .Select(c => c)
-                    //                  .Where(f => f.fields.Equals(FlowFinanceConstants.CustomTokenField))
-                    //                  .Select(c => c.fields.chosenLoanToken).FirstOrDefault();
-
-                    Models.VtexOrder.CustomApp customApp = vtexOrder.customData.customApps.Where(c => c.id.Equals(FlowFinanceConstants.CustomTokenId)).FirstOrDefault();
-                    string chosenLoanToken = customApp.fields.chosenLoanToken;
-
-                    orderInformation.offerToken = chosenLoanToken;
-                    orderInformation.email = vtexOrder.clientProfileData.email;
+                    if (vtexOrder.customData != null)
+                    {
+                        Models.VtexOrder.CustomApp customApp = vtexOrder.customData.customApps.Where(c => c.id.Equals(FlowFinanceConstants.CustomTokenId)).FirstOrDefault();
+                        if (customApp != null)
+                        {
+                            orderInformation.offerToken = customApp.fields.chosenLoanToken;
+                            orderInformation.email = vtexOrder.clientProfileData.email;
+                        }
+                        else
+                        {
+                            orderInformation.hasError = true;
+                            orderInformation.message = $"Custom App not Found. {JsonConvert.SerializeObject(vtexOrder.customData)}";
+                        }
+                    }
+                    else
+                    {
+                        orderInformation.hasError = true;
+                        orderInformation.message = "Custom Data field is Null.";
+                    }
                 }
                 else
                 {
                     orderInformation.hasError = true;
                     orderInformation.message = $"Reason: '{response.ReasonPhrase}'";
                 }
-
-                //Console.WriteLine($"-][- -][- -][- -][- -][- -] |{sb.ToString()}| [- -][- -][- -][- -][- -][- -][-");
             }
             catch(Exception ex)
             {
