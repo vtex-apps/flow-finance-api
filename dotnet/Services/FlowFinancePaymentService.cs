@@ -82,9 +82,9 @@ namespace FlowFinance.Services
                         Models.CreateLoanResponse.RootObject createLoanResponse = (Models.CreateLoanResponse.RootObject)responseWrapper.responseObject;
                         paymentResponse.authorizationId = createLoanResponse.data.id;
                         paymentResponse.code = createLoanResponse.data.account_id.ToString();
-                        paymentResponse.message = createLoanResponse.data.details.pt_br.ToString();
+                        paymentResponse.message = JsonConvert.SerializeObject(createLoanResponse.data.details.pt_br);
                         //paymentResponse.nsu
-                        paymentResponse.status = FlowFinanceConstants.Vtex.Approved;
+                        paymentResponse.status = FlowFinanceConstants.Vtex.Undefined;
                         //paymentResponse.tid
                         paymentResponse.paymentAppData = new PaymentAppData
                         {
