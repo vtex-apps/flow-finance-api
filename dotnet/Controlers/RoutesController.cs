@@ -311,6 +311,13 @@
             return Json(await this._flowFinancePaymentService.DeletePerson(accountId, personId));
         }
 
+        public async Task<IActionResult> RetrieveAllLoans(int accountId)
+        {
+            Console.WriteLine("-> RetrieveAllLoans <-");
+            Response.Headers.Add("Cache-Control", "private");
+            return Json(await this._flowFinancePaymentService.RetrieveAllLoans(accountId));
+        }
+
         public JsonResult PaymentMethods()
         {
             PaymentMethods methods = new PaymentMethods();

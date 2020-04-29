@@ -907,6 +907,16 @@ namespace FlowFinance.Services
             return responseWrapper.responseMessage;
         }
 
+        public async Task<Models.RetrieveAllLoansResponse.RootObject> RetrieveAllLoans(int accountId)
+        {
+            MerchantSettings merchantSettings = await this._paymentRequestRepository.GetMerchantSettings();
+            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings);
+            ResponseWrapper responseWrapper = await flowFinanceAPI.RetrieveAllLoans(accountId);
+            Models.RetrieveAllLoansResponse.RootObject retrieveAllLoansResponse = (Models.RetrieveAllLoansResponse.RootObject)responseWrapper.responseObject;
+
+            return retrieveAllLoansResponse;
+        }
+
         public async Task<string> GetShopperIp()
         {
             string retval = string.Empty;

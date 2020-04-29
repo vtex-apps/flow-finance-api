@@ -103,6 +103,10 @@
     "deletePerson": {
       "path": "/_v/api/connectors/flow-finance/delete-person/:accountId/:personId",
       "public": false
+    },
+    "retrieveAllLoans": {
+      "path": "/_v/api/connectors/flow-finance/retrieve-loans/:accountId",
+      "public": false
     }
   },
     "events": {

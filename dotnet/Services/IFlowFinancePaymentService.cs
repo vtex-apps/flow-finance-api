@@ -39,5 +39,6 @@ namespace FlowFinance.Services
         Task<string> DeletePerson(int accountId, string personId);
         Task<string> SendEmail(string to, MailTemplateType templateType);
         Task<string> GetShopperIp();
+        Task<Models.RetrieveAllLoansResponse.RootObject> RetrieveAllLoans(int accountId);
     }
 }

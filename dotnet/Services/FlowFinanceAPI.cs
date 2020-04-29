@@ -99,7 +99,7 @@ namespace FlowFinance.Services
                     responseContent = await responseMessage.Content.ReadAsStringAsync();
 
                     //Console.WriteLine($" <=]|[=> Response : {responseMessage.ReasonPhrase} : {responseMessage.Content.Headers} : {responseMessage.Headers} : {responseMessage.TrailingHeaders} : {responseContent} <=]|[=> ");
-                    Console.WriteLine($" <=]|[=> Response : {responseMessage.ReasonPhrase} :|: {responseContent} <=]|[=> ");
+                    //Console.WriteLine($" <=]|[=> Response : {responseMessage.ReasonPhrase} :|: {responseContent} <=]|[=> ");
 
                     responseWrapper.success = responseMessage.IsSuccessStatusCode;
                     responseWrapper.responseMessage = responseContent;
@@ -690,6 +690,32 @@ namespace FlowFinance.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"UpdateAccount Error: {ex.Message} InnerException: {ex.InnerException} StackTrace: {ex.StackTrace}");
+            }
+
+            return responseWrapper;
+        }
+
+        /// <summary>
+        /// Retrieve all loans associated with the account-id.
+        /// GET /api/v1/loans
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <returns></returns>
+        public async Task<ResponseWrapper> RetrieveAllLoans(int accountId)
+        {
+            ResponseWrapper responseWrapper = new ResponseWrapper();
+
+            try
+            {
+                responseWrapper = await SendRequest(HttpMethod.Get, $"{FlowFinanceConstants.Loans}", null, accountId.ToString());
+                if (responseWrapper.success)
+                {
+                    responseWrapper.responseObject = JsonConvert.DeserializeObject<Models.RetrieveAllLoansResponse.RootObject>(responseWrapper.responseMessage);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"RetrieveAllLoans Error: {ex.Message} InnerException: {ex.InnerException} StackTrace: {ex.StackTrace}");
             }
 
             return responseWrapper;
