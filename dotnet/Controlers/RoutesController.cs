@@ -159,7 +159,12 @@
                             }
                         };
 
-                        responseBody = await this._flowFinancePaymentService.SignLoan(signLoanRequest, inboundRequestBody.loanId, inboundRequestBody.accountId);
+                        string loanId = inboundRequestBody.loanId;
+                        int accountId = inboundRequestBody.accountId;
+
+                        //Console.WriteLine($"loanId = [{loanId}]   accountId = [{accountId}]");
+
+                        responseBody = await this._flowFinancePaymentService.SignLoan(signLoanRequest, loanId, accountId);
                         if (responseBody.Equals(FlowFinanceConstants.Success))
                         {
                             responseStatusCode = StatusCodes.Status200OK.ToString();
