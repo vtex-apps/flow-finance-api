@@ -113,11 +113,11 @@
         {
             HttpResponseMessage response = new HttpResponseMessage();
 
-            // Internal vtex posts must be to http with use https header
-            callbackUrl = callbackUrl.Replace("https", "http");
-
             try
             {
+                // Internal vtex posts must be to http with use https header
+                callbackUrl = callbackUrl.Replace("https", "http");
+
                 var jsonSerializedPaymentResponse = JsonConvert.SerializeObject(createPaymentResponse);
                 var request = new HttpRequestMessage
                 {
@@ -137,7 +137,7 @@
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"PostCallbackResponse {callbackUrl} Error: {ex.Message} InnerException: {ex.InnerException} StackTrace: {ex.StackTrace}");
+                Console.WriteLine($"PostCallbackResponse to '{callbackUrl}' Error: {ex.Message} InnerException: {ex.InnerException} StackTrace: {ex.StackTrace}");
             }
 
             response.EnsureSuccessStatusCode();

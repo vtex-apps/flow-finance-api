@@ -165,15 +165,15 @@
                         //Console.WriteLine($"loanId = [{loanId}]   accountId = [{accountId}]");
 
                         responseBody = await this._flowFinancePaymentService.SignLoan(signLoanRequest, loanId, accountId);
-                        if (responseBody.Equals(FlowFinanceConstants.Success))
-                        {
+                        //if (responseBody.Equals(FlowFinanceConstants.Success))
+                        //{
                             string callbackUrl = inboundRequestBody.callbackUrl;
                             //decimal amount = inboundRequestBody.amount;
 
                             responseStatusCode = StatusCodes.Status200OK.ToString();
                             // Verify that the loan is signed and update the status with Vtex Payment
                             CreatePaymentResponse verifyPaymentResponse = await this._flowFinancePaymentService.VerifyLoanAsync(paymentId, loanId, accountId, callbackUrl);
-                        }
+                        //}
 
                         break;
                     default:
