@@ -63,6 +63,7 @@
             string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
             if (authToken != null)
             {
+                request.Headers.Add(AUTHORIZATION_HEADER_NAME, authToken);
                 request.Headers.Add(VTEX_ID_HEADER_NAME, authToken);
             }
 
@@ -100,6 +101,7 @@
             string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
             if (authToken != null)
             {
+                request.Headers.Add(AUTHORIZATION_HEADER_NAME, authToken);
                 request.Headers.Add(VTEX_ID_HEADER_NAME, authToken);
             }
 
@@ -129,6 +131,7 @@
                 string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
                 if (authToken != null)
                 {
+                    request.Headers.Add(AUTHORIZATION_HEADER_NAME, authToken);
                     request.Headers.Add(VTEX_ID_HEADER_NAME, authToken);
                 }
 
@@ -160,6 +163,7 @@
             string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
             if (authToken != null)
             {
+                request.Headers.Add(AUTHORIZATION_HEADER_NAME, authToken);
                 request.Headers.Add(VTEX_ID_HEADER_NAME, authToken);
             }
 
@@ -189,6 +193,7 @@
             string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
             if (authToken != null)
             {
+                request.Headers.Add(AUTHORIZATION_HEADER_NAME, authToken);
                 request.Headers.Add(VTEX_ID_HEADER_NAME, authToken);
             }
 
@@ -209,6 +214,7 @@
             string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
             if (authToken != null)
             {
+                request.Headers.Add(AUTHORIZATION_HEADER_NAME, authToken);
                 request.Headers.Add(VTEX_ID_HEADER_NAME, authToken);
             }
 
@@ -247,6 +253,7 @@
             string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
             if (authToken != null)
             {
+                request.Headers.Add(AUTHORIZATION_HEADER_NAME, authToken);
                 request.Headers.Add(VTEX_ID_HEADER_NAME, authToken);
             }
 
@@ -274,16 +281,11 @@
                 string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
                 if (authToken != null)
                 {
+                    request.Headers.Add(AUTHORIZATION_HEADER_NAME, authToken);
                     request.Headers.Add(VTEX_ID_HEADER_NAME, authToken);
                 }
 
-                StringBuilder sb = new StringBuilder();
-
-                string vtexToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
-                if (vtexToken != null)
-                {
-                    request.Headers.Add(VTEX_ID_HEADER_NAME, vtexToken);
-                }
+                //StringBuilder sb = new StringBuilder();
 
                 var client = _clientFactory.CreateClient();
                 var response = await client.SendAsync(request);
@@ -345,6 +347,7 @@
             string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
             if (authToken != null)
             {
+                request.Headers.Add(AUTHORIZATION_HEADER_NAME, authToken);
                 request.Headers.Add(VTEX_ID_HEADER_NAME, authToken);
             }
 
@@ -376,6 +379,7 @@
             string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
             if (authToken != null)
             {
+                request.Headers.Add(AUTHORIZATION_HEADER_NAME, authToken);
                 request.Headers.Add(VTEX_ID_HEADER_NAME, authToken);
             }
 
