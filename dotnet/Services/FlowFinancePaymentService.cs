@@ -103,6 +103,10 @@ namespace FlowFinance.Services
                     else
                     {
                         paymentResponse.message = responseWrapper.errorMessage;
+                        if (responseWrapper.errorMessage.Equals(FlowFinanceConstants.TokenUsedErrorMessage))
+                        {
+                            paymentResponse.status = FlowFinanceConstants.Vtex.Undefined;
+                        }
                     }
                 }
                 else
@@ -191,13 +195,14 @@ namespace FlowFinance.Services
         /// <param name="publicKey"></param>
         /// <param name="privateKey"></param>
         /// <returns></returns>
-        public async Task<CreatePaymentResponse> VerifyLoanAsync(string paymentIdentifier, string loanId, int accountId, string callbackUrl, int amount)
+        public async Task<CreatePaymentResponse> VerifyLoanAsync(string paymentIdentifier, string loanId, int accountId, string callbackUrl)
         {
             string paymentStatus = FlowFinanceConstants.Vtex.Denied;
 
             Models.RetrieveLoanByIdResponse.RootObject retrieveLoanByIdResponse = await this.RetrieveLoanById(loanId, accountId);
 
-            if (retrieveLoanByIdResponse.data.details.pt_br.vlr_financiado != null && retrieveLoanByIdResponse.data.details.pt_br.vlr_financiado >= amount)
+            // Ensure the loan has been signed.
+            if (retrieveLoanByIdResponse.data.signature != null)
             {
                 paymentStatus = FlowFinanceConstants.Vtex.Approved;
             }

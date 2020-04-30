@@ -8,7 +8,7 @@ namespace FlowFinance.Services
 {
     public interface IFlowFinancePaymentService
     {
-        Task<CreatePaymentResponse> VerifyLoanAsync(string paymentIdentifier, string loanId, int accountId, string callbackUrl, int amount);
+        Task<CreatePaymentResponse> VerifyLoanAsync(string paymentIdentifier, string loanId, int accountId, string callbackUrl);
         Task<CancelPaymentResponse> CancelPaymentAsync(CancelPaymentRequest cancelPaymentRequest);
         Task<CapturePaymentResponse> CapturePaymentAsync(CapturePaymentRequest capturePaymentRequest);
         Task<CreatePaymentResponse> CreatePaymentAsync(CreatePaymentRequest createPaymentRequest);

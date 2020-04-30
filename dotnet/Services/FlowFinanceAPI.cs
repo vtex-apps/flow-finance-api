@@ -154,12 +154,12 @@ namespace FlowFinance.Services
 
                                 if (errorResponse.type != null)
                                 {
-                                    responseWrapper.errorMessage = $"Flow Finance Response: {errorResponse.type}: {errorResponse.errorClass}";
+                                    responseWrapper.errorMessage = $"{errorResponse.type}: {errorResponse.errorClass}";
                                 }
 
                                 if (errorResponse.message != null)
                                 {
-                                    responseWrapper.errorMessage = $"Flow Finance Response: Message: {errorResponse.message}";
+                                    responseWrapper.errorMessage = $"{errorResponse.message}";
                                 }
                             }
                             catch (Exception ex)
