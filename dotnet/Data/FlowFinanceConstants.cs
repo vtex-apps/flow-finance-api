@@ -31,7 +31,7 @@
 
         public const string Success = "[Success]";
 
-        public const string TokenUsedErrorMessage = "A loan matching this offer-token already exists";
+        public const string TokenUsedErrorMessage = "A loan matching this offer-token already exists.";
 
         public const string FORWARDED_HEADER = "X-Forwarded-For";
         public const string FORWARDED_HOST = "X-Forwarded-Host";

@@ -63,7 +63,7 @@
             string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
             if (authToken != null)
             {
-                request.Headers.Add(AUTHORIZATION_HEADER_NAME, authToken);
+                request.Headers.Add(VTEX_ID_HEADER_NAME, authToken);
             }
 
             var client = _clientFactory.CreateClient();
@@ -100,7 +100,7 @@
             string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
             if (authToken != null)
             {
-                request.Headers.Add(AUTHORIZATION_HEADER_NAME, authToken);
+                request.Headers.Add(VTEX_ID_HEADER_NAME, authToken);
             }
 
             var client = _clientFactory.CreateClient();
@@ -116,7 +116,7 @@
             try
             {
                 // Internal vtex posts must be to http with use https header
-                callbackUrl = callbackUrl.Replace("https", "http");
+                //callbackUrl = callbackUrl.Replace("https", "http");
 
                 var jsonSerializedPaymentResponse = JsonConvert.SerializeObject(createPaymentResponse);
                 var request = new HttpRequestMessage
@@ -129,7 +129,7 @@
                 string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
                 if (authToken != null)
                 {
-                    request.Headers.Add(AUTHORIZATION_HEADER_NAME, authToken);
+                    request.Headers.Add(VTEX_ID_HEADER_NAME, authToken);
                 }
 
                 var client = _clientFactory.CreateClient();
@@ -140,7 +140,9 @@
                 Console.WriteLine($"PostCallbackResponse to '{callbackUrl}' Error: {ex.Message} InnerException: {ex.InnerException} StackTrace: {ex.StackTrace}");
             }
 
-            response.EnsureSuccessStatusCode();
+
+            Console.WriteLine($"PostCallbackResponse to '{callbackUrl}' status [{response.StatusCode}]");
+            //response.EnsureSuccessStatusCode();
         }
 
         public async Task<MerchantSettings> GetMerchantSettings()
@@ -158,7 +160,7 @@
             string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
             if (authToken != null)
             {
-                request.Headers.Add(AUTHORIZATION_HEADER_NAME, authToken);
+                request.Headers.Add(VTEX_ID_HEADER_NAME, authToken);
             }
 
             var client = _clientFactory.CreateClient();
@@ -187,7 +189,7 @@
             string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
             if (authToken != null)
             {
-                request.Headers.Add(AUTHORIZATION_HEADER_NAME, authToken);
+                request.Headers.Add(VTEX_ID_HEADER_NAME, authToken);
             }
 
             var client = _clientFactory.CreateClient();
@@ -207,7 +209,7 @@
             string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
             if (authToken != null)
             {
-                request.Headers.Add(AUTHORIZATION_HEADER_NAME, authToken);
+                request.Headers.Add(VTEX_ID_HEADER_NAME, authToken);
             }
 
             var client = _clientFactory.CreateClient();
@@ -245,7 +247,7 @@
             string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
             if (authToken != null)
             {
-                request.Headers.Add(AUTHORIZATION_HEADER_NAME, authToken);
+                request.Headers.Add(VTEX_ID_HEADER_NAME, authToken);
             }
 
             var client = _clientFactory.CreateClient();
@@ -272,7 +274,7 @@
                 string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
                 if (authToken != null)
                 {
-                    request.Headers.Add(AUTHORIZATION_HEADER_NAME, authToken);
+                    request.Headers.Add(VTEX_ID_HEADER_NAME, authToken);
                 }
 
                 StringBuilder sb = new StringBuilder();
@@ -343,7 +345,7 @@
             string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
             if (authToken != null)
             {
-                request.Headers.Add(AUTHORIZATION_HEADER_NAME, authToken);
+                request.Headers.Add(VTEX_ID_HEADER_NAME, authToken);
             }
 
             var client = _clientFactory.CreateClient();
@@ -374,7 +376,7 @@
             string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
             if (authToken != null)
             {
-                request.Headers.Add(AUTHORIZATION_HEADER_NAME, authToken);
+                request.Headers.Add(VTEX_ID_HEADER_NAME, authToken);
             }
 
             var client = _clientFactory.CreateClient();
