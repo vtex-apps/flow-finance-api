@@ -1,7 +1,7 @@
 {
   "name": "flow-finance-api",
   "vendor": "vtex",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "title": "Flow Finance",
   "description": "An integration with Flow Finance payment API",
   "categories": [],
@@ -52,6 +52,13 @@
     },
     {
       "name": "ADMIN_DS"
+    },
+	{
+      "name": "outbound-access",
+      "attrs": {
+        "host": "{{account}}.vtexpayments.com.br",
+        "path": "/api/*"
+      }
     },
     {
       "name": "outbound-access",
