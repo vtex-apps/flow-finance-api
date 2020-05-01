@@ -210,8 +210,8 @@ namespace FlowFinance.Services
             CreatePaymentResponse paymentResponse = new CreatePaymentResponse();
             paymentResponse.paymentId = paymentIdentifier;
             paymentResponse.status = paymentStatus;
-            paymentResponse.tid = retrieveLoanByIdResponse.data.offer_token;
-            paymentResponse.authorizationId = retrieveLoanByIdResponse.data.id;
+            paymentResponse.tid = retrieveLoanByIdResponse.data.id;
+            paymentResponse.authorizationId = retrieveLoanByIdResponse.data.offer_token;
             paymentResponse.code = retrieveLoanByIdResponse.data.balance;
             paymentResponse.message = JsonConvert.SerializeObject(retrieveLoanByIdResponse.data.details.pt_br);
 
