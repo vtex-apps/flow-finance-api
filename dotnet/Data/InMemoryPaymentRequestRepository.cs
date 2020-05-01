@@ -49,9 +49,9 @@
             return Task.FromResult(merchantSettings);
         }
 
-        public Task PostCallbackResponse(string callbackUrl, CreatePaymentResponse createPaymentResponse)
+        public Task<string> PostCallbackResponse(string callbackUrl, CreatePaymentResponse createPaymentResponse)
         {
-            return Task.CompletedTask;
+            throw new System.NotImplementedException();
         }
 
         public Task<MerchantSettings> GetAppSettings()

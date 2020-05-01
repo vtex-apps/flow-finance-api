@@ -14,7 +14,7 @@
 
         Task<MerchantSettings> GetMerchantSettings();
 
-        Task PostCallbackResponse(string callbackUrl, CreatePaymentResponse createPaymentResponse);
+        Task<string> PostCallbackResponse(string callbackUrl, CreatePaymentResponse createPaymentResponse);
 
         Task<IList<FlowFinanceShopper>> GetFlowFinanceShoppers();
 

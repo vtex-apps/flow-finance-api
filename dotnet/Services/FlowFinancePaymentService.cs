@@ -202,7 +202,7 @@ namespace FlowFinance.Services
             Models.RetrieveLoanByIdResponse.RootObject retrieveLoanByIdResponse = await this.RetrieveLoanById(loanId, accountId);
 
             // Ensure the loan has been signed.
-            if (retrieveLoanByIdResponse.data.signature != null)
+            if (retrieveLoanByIdResponse.data != null && retrieveLoanByIdResponse.data.signature != null)
             {
                 paymentStatus = FlowFinanceConstants.Vtex.Approved;
             }
@@ -215,7 +215,11 @@ namespace FlowFinance.Services
             paymentResponse.code = retrieveLoanByIdResponse.data.balance;
             paymentResponse.message = JsonConvert.SerializeObject(retrieveLoanByIdResponse.data.details.pt_br);
 
-            await this._paymentRequestRepository.PostCallbackResponse(callbackUrl, paymentResponse);
+            string callbackResponse = await this._paymentRequestRepository.PostCallbackResponse(callbackUrl, paymentResponse);
+            if(!string.IsNullOrEmpty(callbackResponse))
+            {
+                paymentResponse.message = ($"Payment Status was not updated: {callbackResponse}");
+            }
 
             return paymentResponse;
         }

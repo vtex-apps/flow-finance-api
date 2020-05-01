@@ -174,7 +174,7 @@
                             // Verify that the loan is signed and update the status with Vtex Payment
                             CreatePaymentResponse verifyPaymentResponse = await this._flowFinancePaymentService.VerifyLoanAsync(paymentId, loanId, accountId, callbackUrl);
                         //}
-
+                        responseMessage = verifyPaymentResponse.message;
                         break;
                     default:
                         responseStatusCode = StatusCodes.Status405MethodNotAllowed.ToString();

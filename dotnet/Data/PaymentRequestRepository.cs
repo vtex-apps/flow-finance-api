@@ -111,14 +111,15 @@
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task PostCallbackResponse(string callbackUrl, CreatePaymentResponse createPaymentResponse)
+        public async Task<string> PostCallbackResponse(string callbackUrl, CreatePaymentResponse createPaymentResponse)
         {
+            string message = string.Empty;  // Empty message signifies success
             HttpResponseMessage response = new HttpResponseMessage();
 
             try
             {
                 // Internal vtex posts must be to http with use https header
-                //callbackUrl = callbackUrl.Replace("https", "http");
+                callbackUrl = callbackUrl.Replace("https", "http");
 
                 var jsonSerializedPaymentResponse = JsonConvert.SerializeObject(createPaymentResponse);
                 var request = new HttpRequestMessage
@@ -128,6 +129,7 @@
                     Content = new StringContent(jsonSerializedPaymentResponse, Encoding.UTF8, APPLICATION_JSON)
                 };
 
+                request.Headers.Add(FlowFinanceConstants.USE_HTTPS_HEADER_NAME, "true");
                 string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
                 if (authToken != null)
                 {
@@ -141,11 +143,17 @@
             catch (Exception ex)
             {
                 Console.WriteLine($"PostCallbackResponse to '{callbackUrl}' Error: {ex.Message} InnerException: {ex.InnerException} StackTrace: {ex.StackTrace}");
+                message = $"PostCallbackResponse '{createPaymentResponse.status}' to '{callbackUrl}' Error: {ex.Message} InnerException: {ex.InnerException} StackTrace: {ex.StackTrace}";
             }
 
-
-            Console.WriteLine($"PostCallbackResponse to '{callbackUrl}' status [{response.StatusCode}]");
             //response.EnsureSuccessStatusCode();
+            if(!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"PostCallbackResponse to '{callbackUrl}' status [{response.StatusCode}]");
+                message = $"PostCallbackResponse '{createPaymentResponse.status}' to '{callbackUrl}' status [{response.StatusCode}]";
+            }
+
+            return message;
         }
 
         public async Task<MerchantSettings> GetMerchantSettings()
