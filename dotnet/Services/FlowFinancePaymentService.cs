@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Vtex.Api.Context;
 
 namespace FlowFinance.Services
 {
@@ -17,8 +18,9 @@ namespace FlowFinance.Services
         private readonly IPaymentRequestRepository _paymentRequestRepository;
         private readonly IHttpClientFactory _clientFactory;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IIOServiceContext _context;
 
-        public FlowFinancePaymentService(IPaymentRequestRepository paymentRequestRepository, IHttpContextAccessor httpContextAccessor, IHttpClientFactory clientFactory)
+        public FlowFinancePaymentService(IPaymentRequestRepository paymentRequestRepository, IHttpContextAccessor httpContextAccessor, IHttpClientFactory clientFactory, IIOServiceContext context)
         {
             this._paymentRequestRepository = paymentRequestRepository ??
                                             throw new ArgumentNullException(nameof(paymentRequestRepository));
@@ -28,6 +30,9 @@ namespace FlowFinance.Services
 
             this._clientFactory = clientFactory ??
                                   throw new ArgumentNullException(nameof(clientFactory));
+
+            this._context = context ??
+                             throw new ArgumentNullException(nameof(context));
         }
 
         /// <summary>
@@ -422,26 +427,38 @@ namespace FlowFinance.Services
             Console.WriteLine($"|[ Id: {callbackPayload.data.entity.id} ]|[ Status: {callbackPayload.data.entity.status} ]|");
             string message = string.Empty;
             FlowFinanceShopper shopper = await this.GetFlowFinanceShopperById(callbackPayload.data.entity.id.ToString());
-            string email = shopper.email;
-
-            switch (callbackPayload.data.eventType)
+            if (shopper != null && shopper.email != null)
             {
-                case FlowFinanceConstants.WebHookNotification.AccountCreated:
-                    message = await this.SendEmail(email, MailTemplateType.Submitted);
-                    break;
-                case FlowFinanceConstants.WebHookNotification.AccountUpdated:
-                    if(callbackPayload.data.entity.status.Equals(FlowFinanceConstants.FlowFinanceStatus.Approved))
-                    {
-                        message = await this.SendEmail(email, MailTemplateType.Approved);
-                    }
-                    else if(callbackPayload.data.entity.status.Equals(FlowFinanceConstants.FlowFinanceStatus.Denied))
-                    {
-                        message = await this.SendEmail(email, MailTemplateType.Denied);
-                    }
-                    break;
+                string email = shopper.email;
+
+                switch (callbackPayload.data.eventType)
+                {
+                    case FlowFinanceConstants.WebHookNotification.AccountCreated:
+                        message = await this.SendEmail(email, MailTemplateType.Submitted);
+                        break;
+                    case FlowFinanceConstants.WebHookNotification.AccountUpdated:
+                        if (callbackPayload.data.entity.status.Equals(FlowFinanceConstants.FlowFinanceStatus.Approved))
+                        {
+                            message = await this.SendEmail(email, MailTemplateType.Approved);
+                        }
+                        else if (callbackPayload.data.entity.status.Equals(FlowFinanceConstants.FlowFinanceStatus.Denied))
+                        {
+                            message = await this.SendEmail(email, MailTemplateType.Denied);
+                        }
+                        break;
+                }
+            }
+            else
+            {
+                message = $"Could not load email for account {callbackPayload.data.entity.id}";
             }
 
             Console.WriteLine($"SendMail Result: {message}");
+
+            // Logging
+            string accountName = _httpContextAccessor.HttpContext.Request.Headers[FlowFinanceConstants.VTEX_ACCOUNT_HEADER_NAME].ToString();
+
+            _context.Vtex.Logger.Info("FlowFinance", accountName, message);
         }
 
         public async Task<ApplicationResult> ProcessApplication(ApplicationInput applicationInput)
