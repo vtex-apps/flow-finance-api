@@ -9,14 +9,17 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Vtex.Api.Context;
 
     public class RoutesController : Controller
     {
         private readonly IFlowFinancePaymentService _flowFinancePaymentService;
+        private readonly IIOServiceContext _context;
 
-        public RoutesController(IFlowFinancePaymentService flowFinancePaymentService)
+        public RoutesController(IFlowFinancePaymentService flowFinancePaymentService, IIOServiceContext context)
         {
             this._flowFinancePaymentService = flowFinancePaymentService ?? throw new ArgumentNullException(nameof(flowFinancePaymentService));
+            this._context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         /// <summary>
@@ -245,16 +248,24 @@
 
         public async Task ProcessCallback()
         {
-            Console.WriteLine($"ProcessCallback");
-            var bodyAsText = await new System.IO.StreamReader(HttpContext.Request.Body).ReadToEndAsync();
-            //Console.WriteLine($"Body=[{bodyAsText}]");
-            //dynamic callbackPayload = JsonConvert.DeserializeObject(bodyAsText);
-            Models.WebhookPayload.RootObject callbackPayload = JsonConvert.DeserializeObject<Models.WebhookPayload.RootObject>(bodyAsText);
-            //Console.WriteLine($"payload=[{callbackPayload}]");
-            //string callbackEvent = callbackPayload.Data.Event;
-            //string entityType = callbackPayload.Data.Entity_type;
-            //dynamic entity = callbackPayload.Data.Entity;
-            await this._flowFinancePaymentService.ProcessCallback(callbackPayload);
+            try
+            {
+                Console.WriteLine($"ProcessCallback");
+                var bodyAsText = await new System.IO.StreamReader(HttpContext.Request.Body).ReadToEndAsync();
+                _context.Vtex.Logger.Info("FlowFinance", null, $"Callback: {bodyAsText}");
+                //Console.WriteLine($"Body=[{bodyAsText}]");
+                //dynamic callbackPayload = JsonConvert.DeserializeObject(bodyAsText);
+                Models.WebhookPayload.RootObject callbackPayload = JsonConvert.DeserializeObject<Models.WebhookPayload.RootObject>(bodyAsText);
+                //Console.WriteLine($"payload=[{callbackPayload}]");
+                //string callbackEvent = callbackPayload.Data.Event;
+                //string entityType = callbackPayload.Data.Entity_type;
+                //dynamic entity = callbackPayload.Data.Entity;
+                await this._flowFinancePaymentService.ProcessCallback(callbackPayload);
+            }
+            catch(Exception ex)
+            {
+                _context.Vtex.Logger.Info("FlowFinance", null, $"Callback Error: {ex.Message}");
+            }
         }
 
         public async Task<IActionResult> CreateWebhook()
