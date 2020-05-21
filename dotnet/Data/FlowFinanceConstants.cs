@@ -78,7 +78,7 @@
             public const string Pending = "pending";
             public const string Approved = "approved";
             public const string UnderReview = "under-review";
-            public const string Denied = "denied";
+            public const string Denied = "rejected";
         }
 
         public class LoanStatus
@@ -86,7 +86,8 @@
             public const string None = "none";  // This is not an expected status from FF but is being used to represent no account.
             public const string Pending = "pending";
             public const string Approved = "approved";
-            public const string Denied = "denied";
+            public const string UnderReview = "under-review";
+            public const string Denied = "rejected";
         }
     }
 

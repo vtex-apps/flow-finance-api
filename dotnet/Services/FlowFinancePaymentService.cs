@@ -343,8 +343,10 @@ namespace FlowFinance.Services
                             getLoanOptionsResponse.accountStatus = FlowFinanceConstants.LoanStatus.Denied;
                             break;
                         case FlowFinanceConstants.FlowFinanceStatus.Pending:
-                        case FlowFinanceConstants.FlowFinanceStatus.UnderReview:
                             getLoanOptionsResponse.accountStatus = FlowFinanceConstants.LoanStatus.Pending;
+                            break;
+                        case FlowFinanceConstants.FlowFinanceStatus.UnderReview:
+                            getLoanOptionsResponse.accountStatus = FlowFinanceConstants.LoanStatus.UnderReview;
                             break;
                         default:
                             getLoanOptionsResponse.accountStatus = FlowFinanceConstants.LoanStatus.None;
