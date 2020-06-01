@@ -18,6 +18,7 @@ namespace FlowFinance.Models
     {
         public string accountStatus { get; set; }
         public decimal availableCredit { get; set; }
+        public decimal lineOfCredit { get; set; }
         public List<LoanOption> loanOptions { get; set; }
     }
 }

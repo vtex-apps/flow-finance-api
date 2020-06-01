@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Added line_of_credit to emails
+- Get email from webhook notification if present.
+- Added line_of_credit to getLoanOptions
+
 ## [0.0.37] - 2020-05-21
 
 ## [0.0.36] - 2020-05-21
