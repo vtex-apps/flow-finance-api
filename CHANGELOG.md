@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.0.38] - 2020-06-01
+
 ### Added
 
 - Added line_of_credit to emails
