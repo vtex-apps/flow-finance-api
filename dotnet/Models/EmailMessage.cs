@@ -7,6 +7,7 @@ namespace FlowFinance.Models
     public class JsonData
     {
         public string to { get; set; }
+        public string line_of_credit { get; set; }
     }
 
     public class EmailMessage

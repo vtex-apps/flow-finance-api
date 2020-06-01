@@ -463,16 +463,16 @@ namespace FlowFinance.Services
                 switch (callbackPayload.Data.Event)
                 {
                     case FlowFinanceConstants.WebHookNotification.AccountCreated:
-                        message = await this.SendEmail(email, MailTemplateType.Submitted);
+                        message = await this.SendEmail(email, MailTemplateType.Submitted, callbackPayload.Data.Entity.LineOfCredit);
                         break;
                     case FlowFinanceConstants.WebHookNotification.AccountUpdated:
                         if (callbackPayload.Data.Entity.Status.Equals(FlowFinanceConstants.FlowFinanceStatus.Approved))
                         {
-                            message = await this.SendEmail(email, MailTemplateType.Approved);
+                            message = await this.SendEmail(email, MailTemplateType.Approved, callbackPayload.Data.Entity.LineOfCredit);
                         }
                         else if (callbackPayload.Data.Entity.Status.Equals(FlowFinanceConstants.FlowFinanceStatus.Denied))
                         {
-                            message = await this.SendEmail(email, MailTemplateType.Denied);
+                            message = await this.SendEmail(email, MailTemplateType.Denied, callbackPayload.Data.Entity.LineOfCredit);
                         }
                         break;
                 }
@@ -900,7 +900,7 @@ namespace FlowFinance.Services
         /// "X-VTEX-API-AppToken": "APPTOKEN"
         /// </summary>
         /// <returns></returns>
-        public async Task<string> SendEmail(string to, MailTemplateType templateType)
+        public async Task<string> SendEmail(string to, MailTemplateType templateType, string lineOfCredit)
         {
             string templateName = string.Empty;
             switch(templateType)
@@ -922,7 +922,8 @@ namespace FlowFinance.Services
                 providerName = FlowFinanceConstants.Acquirer,
                 jsonData = new JsonData
                 {
-                    to = to
+                    to = to,
+                    line_of_credit = lineOfCredit
                 }
             };
 
