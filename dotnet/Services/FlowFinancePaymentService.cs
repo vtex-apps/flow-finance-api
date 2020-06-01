@@ -65,7 +65,7 @@ namespace FlowFinance.Services
             {
                 paymentResponse.message = $"Could not load Order {createPaymentRequest.orderId}";
             }
-            else if(orderInformation.hasError)
+            else if (orderInformation.hasError)
             {
                 paymentResponse.message = $"Could not load Order {createPaymentRequest.orderId} Response Message: {orderInformation.message}";
             }
@@ -221,7 +221,7 @@ namespace FlowFinance.Services
             paymentResponse.message = JsonConvert.SerializeObject(retrieveLoanByIdResponse.data.details.pt_br);
 
             string callbackResponse = await this._paymentRequestRepository.PostCallbackResponse(callbackUrl, paymentResponse);
-            if(!string.IsNullOrEmpty(callbackResponse))
+            if (!string.IsNullOrEmpty(callbackResponse))
             {
                 paymentResponse.message = ($"Payment Status was not updated: {callbackResponse}");
             }
@@ -319,6 +319,7 @@ namespace FlowFinance.Services
             GetLoanOptionsResponse getLoanOptionsResponse = new GetLoanOptionsResponse
             {
                 availableCredit = 0m,
+                lineOfCredit = 0m,
                 accountStatus = FlowFinanceConstants.LoanStatus.None,
                 loanOptions = new List<LoanOption>()
             };
@@ -334,7 +335,7 @@ namespace FlowFinance.Services
                 if (responseWrapper.success)
                 {
                     Models.RetrieveAccountByIdResponse.RootObject accountResponse = (Models.RetrieveAccountByIdResponse.RootObject)responseWrapper.responseObject;
-                    switch(accountResponse.data.status)
+                    switch (accountResponse.data.status)
                     {
                         case FlowFinanceConstants.FlowFinanceStatus.Approved:
                             getLoanOptionsResponse.accountStatus = FlowFinanceConstants.LoanStatus.Approved;
@@ -361,7 +362,17 @@ namespace FlowFinance.Services
                         decimal.TryParse(arrayAvailableCredit[1], out availableCredit);
                     }
 
+                    decimal lineOfCredit = 0m;
+                    string rawLineOfCredit = accountResponse.data.line_of_credit;
+                    if (!string.IsNullOrEmpty(rawLineOfCredit))
+                    {
+                        string[] arrayLineOfCredit = rawLineOfCredit.Split(' ');
+                        decimal.TryParse(arrayLineOfCredit[1], out lineOfCredit);
+                    }
+
                     getLoanOptionsResponse.availableCredit = availableCredit;
+                    getLoanOptionsResponse.lineOfCredit = lineOfCredit;
+
                     if (availableCredit >= getLoanOptionsRequest.total)
                     {
                         responseWrapper = await flowFinanceAPI.LoanPreview(getLoanOptionsRequest.total, accountId);
@@ -425,25 +436,41 @@ namespace FlowFinance.Services
 
         public async Task ProcessCallback(Models.WebhookPayload.RootObject callbackPayload)
         {
-            Console.WriteLine($"|[ Event: {callbackPayload.data.eventType} ]|[ Type: {callbackPayload.data.entity_type} ]|");
-            Console.WriteLine($"|[ Id: {callbackPayload.data.entity.id} ]|[ Status: {callbackPayload.data.entity.status} ]|");
+            Console.WriteLine($"|[ Event: {callbackPayload.Data.Event} ]|[ Type: {callbackPayload.Data.EntityType} ]|");
+            Console.WriteLine($"|[ Id: {callbackPayload.Data.Entity.Id} ]|[ Status: {callbackPayload.Data.Entity.Status} ]|");
             string message = string.Empty;
-            FlowFinanceShopper shopper = await this.GetFlowFinanceShopperById(callbackPayload.data.entity.id.ToString());
-            if (shopper != null && shopper.email != null)
+            string email = string.Empty;
+            try
             {
-                string email = shopper.email;
+                email = callbackPayload.Data.Entity.Business.ContactInfo.Email;
+            }
+            catch (Exception ex)
+            {
+                _context.Vtex.Logger.Error("FlowFinance", "ProcessCallback", JsonConvert.SerializeObject(callbackPayload), ex);
+            }
 
-                switch (callbackPayload.data.eventType)
+            if (string.IsNullOrEmpty(email))
+            {
+                FlowFinanceShopper shopper = await this.GetFlowFinanceShopperById(callbackPayload.Data.Entity.Id.ToString());
+                if (shopper != null && shopper.email != null)
+                {
+                    email = shopper.email;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(email))
+            {
+                switch (callbackPayload.Data.Event)
                 {
                     case FlowFinanceConstants.WebHookNotification.AccountCreated:
                         message = await this.SendEmail(email, MailTemplateType.Submitted);
                         break;
                     case FlowFinanceConstants.WebHookNotification.AccountUpdated:
-                        if (callbackPayload.data.entity.status.Equals(FlowFinanceConstants.FlowFinanceStatus.Approved))
+                        if (callbackPayload.Data.Entity.Status.Equals(FlowFinanceConstants.FlowFinanceStatus.Approved))
                         {
                             message = await this.SendEmail(email, MailTemplateType.Approved);
                         }
-                        else if (callbackPayload.data.entity.status.Equals(FlowFinanceConstants.FlowFinanceStatus.Denied))
+                        else if (callbackPayload.Data.Entity.Status.Equals(FlowFinanceConstants.FlowFinanceStatus.Denied))
                         {
                             message = await this.SendEmail(email, MailTemplateType.Denied);
                         }
@@ -452,7 +479,7 @@ namespace FlowFinance.Services
             }
             else
             {
-                message = $"Could not load email for account {callbackPayload.data.entity.id}";
+                message = $"Could not load email for account {callbackPayload.Data.Entity.Id}";
             }
 
             Console.WriteLine($"SendMail Result: {message}");
