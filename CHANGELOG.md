@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Log timespan for GetLoanOptions actions
+
 ## [0.0.38] - 2020-06-01
 
 ### Added
