@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -316,6 +317,15 @@ namespace FlowFinance.Services
         /// <returns></returns>
         public async Task<GetLoanOptionsResponse> GetLoanOptions(GetLoanOptionsRequest getLoanOptionsRequest)
         {
+            Stopwatch stopwatchTotal = new Stopwatch();
+            stopwatchTotal.Start();
+            Stopwatch stopWatch = new Stopwatch();
+            TimeSpan timeSpan;
+            double getShopperTime = 0;
+            double getMerchantSettingsTime = 0;
+            double retrieveAccountByIdTime = 0;
+            double loanPreviewTime = 0;
+
             GetLoanOptionsResponse getLoanOptionsResponse = new GetLoanOptionsResponse
             {
                 availableCredit = 0m,
@@ -324,14 +334,30 @@ namespace FlowFinance.Services
                 loanOptions = new List<LoanOption>()
             };
 
+            stopWatch.Start();
             FlowFinanceShopper shopper = await this.GetFlowFinanceShopperByEmail(getLoanOptionsRequest.email);
+            stopWatch.Stop();
+            timeSpan = stopWatch.Elapsed;
+            getShopperTime = timeSpan.TotalMilliseconds;
+
             if (shopper != null && !string.IsNullOrEmpty(shopper.accountId))
             {
                 int accountId = int.Parse(shopper.accountId);
                 Console.WriteLine($"GetLoanOptions: Account Id for '{shopper.email}' is '{shopper.accountId}'");
+
+                stopWatch.Start();
                 MerchantSettings merchantSettings = await this._paymentRequestRepository.GetMerchantSettings();
+                stopWatch.Stop();
+                timeSpan = stopWatch.Elapsed;
+                getMerchantSettingsTime = timeSpan.TotalMilliseconds;
+
+                stopWatch.Start();
                 IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings);
                 ResponseWrapper responseWrapper = await flowFinanceAPI.RetrieveAccountById(accountId);
+                stopWatch.Stop();
+                timeSpan = stopWatch.Elapsed;
+                retrieveAccountByIdTime = timeSpan.TotalMilliseconds;
+
                 if (responseWrapper.success)
                 {
                     Models.RetrieveAccountByIdResponse.RootObject accountResponse = (Models.RetrieveAccountByIdResponse.RootObject)responseWrapper.responseObject;
@@ -375,7 +401,12 @@ namespace FlowFinance.Services
 
                     if (availableCredit >= getLoanOptionsRequest.total)
                     {
+                        stopWatch.Start();
                         responseWrapper = await flowFinanceAPI.LoanPreview(getLoanOptionsRequest.total, accountId);
+                        stopWatch.Stop();
+                        timeSpan = stopWatch.Elapsed;
+                        loanPreviewTime = timeSpan.TotalMilliseconds;
+
                         if (responseWrapper.success)
                         {
                             Models.LoanPreviewResponse.RootObject loanPreviewResponse = (Models.LoanPreviewResponse.RootObject)responseWrapper.responseObject;
@@ -397,14 +428,21 @@ namespace FlowFinance.Services
                         else
                         {
                             Console.WriteLine($"Loan Preview Failed {responseWrapper.errorMessage}");
+                            _context.Vtex.Logger.Info("FlowFinance", "GetLoanOptions", $"Loan Preview for {shopper.email} ({shopper.accountId}) Failed: {responseWrapper.errorMessage}");
                         }
                     }
                 }
                 else
                 {
                     Console.WriteLine($"Retrieve Account By Id Failed {responseWrapper.errorMessage}");
+                    _context.Vtex.Logger.Info("FlowFinance", "GetLoanOptions", $"Retrieve Account for Id {shopper.accountId} ({shopper.email}) Failed: {responseWrapper.errorMessage}");
                 }
             }
+
+            stopwatchTotal.Stop();
+            timeSpan = stopwatchTotal.Elapsed;
+
+            _context.Vtex.Logger.Info("FlowFinance", "GetLoanOptions", $"Shopper:{getShopperTime} Settiings:{getMerchantSettingsTime} Account:{retrieveAccountByIdTime} Preview:{loanPreviewTime} Total:{timeSpan.TotalMilliseconds}");
 
             return getLoanOptionsResponse;
         }
