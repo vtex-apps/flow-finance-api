@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -121,6 +122,8 @@ namespace FlowFinance.Services
                 }
             }
 
+            _context.Vtex.Logger.Info("FlowFinance", "CreatePayment", JsonConvert.SerializeObject(paymentResponse));
+
             return paymentResponse;
         }
 
@@ -227,6 +230,8 @@ namespace FlowFinance.Services
                 paymentResponse.message = ($"Payment Status was not updated: {callbackResponse}");
             }
 
+            _context.Vtex.Logger.Info("FlowFinance", "VerifyLoan", JsonConvert.SerializeObject(paymentResponse));
+
             return paymentResponse;
         }
 
@@ -256,6 +261,7 @@ namespace FlowFinance.Services
             else
             {
                 Console.WriteLine($"PreQualify Failed.  {responseWrapper.errorMessage}");
+                _context.Vtex.Logger.Info("FlowFinance", "PreQualify", responseWrapper.errorMessage);
             }
 
             return eligible;
@@ -267,6 +273,8 @@ namespace FlowFinance.Services
             IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings);
             ResponseWrapper responseWrapper = await flowFinanceAPI.CreateAccount(createAccountRequest);
             Models.CreateAccountResponse.RootObject createAccountResponse = (Models.CreateAccountResponse.RootObject)responseWrapper.responseObject;
+
+            _context.Vtex.Logger.Info("FlowFinance", "CreateAccount", JsonConvert.SerializeObject(createAccountResponse));
 
             return createAccountResponse;
         }
@@ -286,6 +294,8 @@ namespace FlowFinance.Services
                 Console.WriteLine($"Loan Preview Failed.  {responseWrapper.errorMessage}");
             }
 
+            _context.Vtex.Logger.Info("FlowFinance", "LoanPreview", JsonConvert.SerializeObject(loanPreviewResponse));
+
             return loanPreviewResponse;
         }
 
@@ -302,7 +312,10 @@ namespace FlowFinance.Services
             else
             {
                 Console.WriteLine($"Create Loan Failed.  {responseWrapper.errorMessage}");
+                _context.Vtex.Logger.Info("FlowFinance", "CreateLoan", responseWrapper.errorMessage);
             }
+
+            _context.Vtex.Logger.Info("FlowFinance", "CreateLoan", JsonConvert.SerializeObject(createLoanResponse));
 
             return createLoanResponse;
         }
@@ -443,6 +456,7 @@ namespace FlowFinance.Services
             timeSpan = stopwatchTotal.Elapsed;
 
             _context.Vtex.Logger.Info("FlowFinance", "GetLoanOptions", $"Shopper:{getShopperTime} Settiings:{getMerchantSettingsTime} Account:{retrieveAccountByIdTime} Preview:{loanPreviewTime} Total:{timeSpan.TotalMilliseconds}");
+            _context.Vtex.Logger.Info("FlowFinance", "GetLoanOptions", JsonConvert.SerializeObject(getLoanOptionsResponse));
 
             return getLoanOptionsResponse;
         }
@@ -738,6 +752,8 @@ namespace FlowFinance.Services
                 sb.AppendLine($"Create Person Error: {responseWrapperCreatePerson.errorMessage}");
             applicationResult.error = sb.ToString();
 
+            _context.Vtex.Logger.Info("FlowFinance", "ProcessApplication", JsonConvert.SerializeObject(applicationResult));
+
             return applicationResult;
         }
 
@@ -954,6 +970,21 @@ namespace FlowFinance.Services
                     break;
             }
 
+            // Normalize line_of_credit
+            decimal line_of_credit = 0m;
+            string cultureInfo = string.Empty;
+            if (!string.IsNullOrEmpty(lineOfCredit))
+            {
+                string[] arrayLineOfCredit = lineOfCredit.Split(' ');
+                decimal.TryParse(arrayLineOfCredit[1], out line_of_credit);
+                switch(arrayLineOfCredit[1])
+                {
+                    case "BRL":
+                        cultureInfo = FlowFinanceConstants.CultureInfo.Brazil;
+                        break;
+                }
+            }
+
             EmailMessage emailMessage = new EmailMessage
             {
                 templateName = templateName,
@@ -961,7 +992,7 @@ namespace FlowFinance.Services
                 jsonData = new JsonData
                 {
                     to = to,
-                    line_of_credit = lineOfCredit
+                    line_of_credit = line_of_credit.ToString("C2", CultureInfo.GetCultureInfo(cultureInfo))
                 }
             };
 

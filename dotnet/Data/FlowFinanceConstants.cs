@@ -89,6 +89,11 @@
             public const string UnderReview = "under-review";
             public const string Denied = "rejected";
         }
+
+        public class CultureInfo
+        {
+            public const string Brazil = "pt-BR";
+        }
     }
 
     public enum MailTemplateType
