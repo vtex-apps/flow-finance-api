@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Format line_of_credit for emails
+- Additinal logging
+
 ## [0.0.39] - 2020-06-02
 
 ### Added
