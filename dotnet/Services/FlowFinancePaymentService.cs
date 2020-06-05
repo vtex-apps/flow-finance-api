@@ -336,6 +336,7 @@ namespace FlowFinance.Services
             TimeSpan timeSpan;
             double getShopperTime = 0;
             double getMerchantSettingsTime = 0;
+            double apiTime = 0;
             double retrieveAccountByIdTime = 0;
             double loanPreviewTime = 0;
 
@@ -358,14 +359,18 @@ namespace FlowFinance.Services
                 int accountId = int.Parse(shopper.accountId);
                 Console.WriteLine($"GetLoanOptions: Account Id for '{shopper.email}' is '{shopper.accountId}'");
 
-                stopWatch.Start();
+                stopWatch.Restart();
                 MerchantSettings merchantSettings = await this._paymentRequestRepository.GetMerchantSettings();
                 stopWatch.Stop();
                 timeSpan = stopWatch.Elapsed;
                 getMerchantSettingsTime = timeSpan.TotalMilliseconds;
 
-                stopWatch.Start();
+                stopWatch.Restart();
                 IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings);
+                stopWatch.Stop();
+                timeSpan = stopWatch.Elapsed;
+                apiTime = timeSpan.TotalMilliseconds;
+                stopWatch.Restart();
                 ResponseWrapper responseWrapper = await flowFinanceAPI.RetrieveAccountById(accountId);
                 stopWatch.Stop();
                 timeSpan = stopWatch.Elapsed;
@@ -414,7 +419,7 @@ namespace FlowFinance.Services
 
                     if (availableCredit >= getLoanOptionsRequest.total)
                     {
-                        stopWatch.Start();
+                        stopWatch.Restart();
                         responseWrapper = await flowFinanceAPI.LoanPreview(getLoanOptionsRequest.total, accountId);
                         stopWatch.Stop();
                         timeSpan = stopWatch.Elapsed;
@@ -455,7 +460,7 @@ namespace FlowFinance.Services
             stopwatchTotal.Stop();
             timeSpan = stopwatchTotal.Elapsed;
 
-            _context.Vtex.Logger.Info("FlowFinance", "GetLoanOptions", $"Shopper:{getShopperTime} Settiings:{getMerchantSettingsTime} Account:{retrieveAccountByIdTime} Preview:{loanPreviewTime} Total:{timeSpan.TotalMilliseconds}");
+            _context.Vtex.Logger.Info("FlowFinance", "GetLoanOptions", $"Shopper:{getShopperTime} Settiings:{getMerchantSettingsTime} API:{apiTime} Account:{retrieveAccountByIdTime} Preview:{loanPreviewTime} Total:{timeSpan.TotalMilliseconds}");
             _context.Vtex.Logger.Info("FlowFinance", "GetLoanOptions", JsonConvert.SerializeObject(getLoanOptionsResponse));
 
             return getLoanOptionsResponse;

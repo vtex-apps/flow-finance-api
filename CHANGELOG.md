@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## Changed
+
+- Changed timespan logging
+
 ## [0.0.40] - 2020-06-04
 
 ### Added
