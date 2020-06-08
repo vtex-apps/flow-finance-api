@@ -982,7 +982,7 @@ namespace FlowFinance.Services
             {
                 string[] arrayLineOfCredit = lineOfCredit.Split(' ');
                 decimal.TryParse(arrayLineOfCredit[1], out line_of_credit);
-                switch(arrayLineOfCredit[1])
+                switch(arrayLineOfCredit[0])
                 {
                     case "BRL":
                         cultureInfo = FlowFinanceConstants.CultureInfo.Brazil;
