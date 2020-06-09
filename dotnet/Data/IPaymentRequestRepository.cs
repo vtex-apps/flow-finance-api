@@ -25,5 +25,9 @@
         Task<string> GetOrderConfiguration();
 
         Task<bool> SetOrderConfiguration(string jsonSerializedOrderConfig);
+
+        Task<FlowFinanceToken> LoadToken();
+
+        Task SaveToken(FlowFinanceToken flowFinanceToken);
     }
 }

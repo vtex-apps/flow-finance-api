@@ -14,17 +14,20 @@ namespace FlowFinance.Services
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IHttpClientFactory _clientFactory;
+        private readonly IPaymentRequestRepository _paymentRequestRepository;
 
         private readonly string client_id;
         private readonly string client_secret;
-        private readonly string accessToken;
+        //private readonly string accessToken;
+        public string accessToken;
         private readonly string flowFinaceApiUrl;
         //private readonly string flowFinaceApiUrlSecure;
 
-        public FlowFinanceAPI(IHttpContextAccessor httpContextAccessor, IHttpClientFactory clientFactory, MerchantSettings merchantSettings)
+        public FlowFinanceAPI(IHttpContextAccessor httpContextAccessor, IHttpClientFactory clientFactory, MerchantSettings merchantSettings, IPaymentRequestRepository paymentRequestRepository)
         {
             this._httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
             this._clientFactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
+            this._paymentRequestRepository = paymentRequestRepository ?? throw new ArgumentNullException(nameof(paymentRequestRepository));
 
             this.client_id = merchantSettings.clientId ?? throw new ArgumentNullException(nameof(merchantSettings.clientId));
             this.client_secret = merchantSettings.clientSecret ?? throw new ArgumentNullException(nameof(merchantSettings.clientSecret));
@@ -32,7 +35,33 @@ namespace FlowFinance.Services
             //this.flowFinaceApiUrlSecure = $"{(merchantSettings.isLive ? FlowFinanceConstants.FlowFinaceApiUrlSecure : FlowFinanceConstants.FlowFinaceStgApiUrlSecure)}{FlowFinanceConstants.FlowFinaceApiVersion}";
             //this.flowFinaceApiUrlSecure = merchantSettings.isLive ? FlowFinanceConstants.FlowFinaceApiUrlSecure : FlowFinanceConstants.FlowFinaceStgApiUrlSecure;
 
-            this.accessToken = GetAccessToken().Result;
+            //this.accessToken = GetAccessToken().Result;
+        }
+
+        public async Task GetToken()
+        {
+            bool needToken = true;
+            string refreshToken = string.Empty;
+            FlowFinanceToken flowFinanceToken = await _paymentRequestRepository.LoadToken();
+            if (flowFinanceToken != null)
+            {
+                this.accessToken = flowFinanceToken.AccessToken;
+                refreshToken = flowFinanceToken.RefreshToken;
+                //Console.WriteLine($"Has token? {!string.IsNullOrEmpty(flowFinanceToken.AccessToken)} Expires {flowFinanceToken.ExpiresAt}");
+                if (!string.IsNullOrEmpty(flowFinanceToken.AccessToken))
+                {
+                    if (flowFinanceToken.ExpiresAt > DateTime.Now)
+                    {
+                        needToken = false;
+                    }
+                }
+            }
+
+            if(needToken)
+            {
+                //Console.WriteLine("Getting/Refreshing Token.");
+                this.accessToken = await GetAccessToken(refreshToken);
+            }
         }
 
         /// <summary>
@@ -50,6 +79,8 @@ namespace FlowFinance.Services
 
             ResponseWrapper responseWrapper = new ResponseWrapper();
             string responseContent = string.Empty;
+
+            await GetToken();
 
             if (string.IsNullOrEmpty(this.accessToken))
             {
@@ -573,7 +604,7 @@ namespace FlowFinance.Services
                 var request = new HttpRequestMessage
                 {
                     Method = HttpMethod.Post,
-                    RequestUri = new Uri($"{flowFinaceApiUrl}{FlowFinanceConstants.OAuth}"),
+                    RequestUri = new Uri($"{flowFinaceApiUrl}{FlowFinanceConstants.OAuthLogin}"),
                 };
 
                 // Flow Headers
@@ -598,16 +629,86 @@ namespace FlowFinance.Services
             return oAuthResponse;
         }
 
-        public async Task<string> GetAccessToken()
+        /// <summary>
+        /// Refresh an expired access-token with a refresh-token.
+        /// Optionally, you may include the header param account-id in which case account-specific tokens will be generated.
+        /// Note that refresh-token are NOT re-generated.
+        /// POST /api/v1/oauth/token
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Models.OAuthResponse.RootObject> OAuthToken(string refreshToken)
+        {
+            //Console.WriteLine("--] OAuthToken [--");
+
+            Models.OAuthResponse.RootObject oAuthResponse = null;
+            Models.OAuthRequest.RootObject oAuthRequest = new Models.OAuthRequest.RootObject
+            {
+                refresh_token = refreshToken
+            };
+
+            string jsonSerializedOAuthRequest = JsonConvert.SerializeObject(oAuthRequest);
+
+            try
+            {
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Post,
+                    RequestUri = new Uri($"{flowFinaceApiUrl}{FlowFinanceConstants.OAuthToken}"),
+                    Content = new StringContent(jsonSerializedOAuthRequest, Encoding.UTF8, FlowFinanceConstants.APPLICATION_JSON)
+                };
+
+                // Vtex headers
+                request.Headers.Add(FlowFinanceConstants.USE_HTTPS_HEADER_NAME, "true");
+                //request.Headers.Add(PROXY_TO_HEADER_NAME, flowFinaceApiUrlSecure);
+                request.Headers.Add(FlowFinanceConstants.PROXY_AUTHORIZATION_HEADER_NAME, _httpContextAccessor.HttpContext.Request.Headers[FlowFinanceConstants.HEADER_VTEX_CREDENTIAL].ToString());
+
+                HttpClient client = _clientFactory.CreateClient();
+                HttpResponseMessage responseMessage = await client.SendAsync(request);
+                string responseContent = await responseMessage.Content.ReadAsStringAsync();
+                //Console.WriteLine($"OAuthLogin Response Content {responseContent}");
+                oAuthResponse = JsonConvert.DeserializeObject<Models.OAuthResponse.RootObject>(responseContent);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"OAuthLogin Error: {ex.Message} InnerException: {ex.InnerException} StackTrace: {ex.StackTrace}");
+            }
+
+            return oAuthResponse;
+        }
+
+        public async Task<string> GetAccessToken(string refreshToken)
         {
             string token = string.Empty;
+            Models.OAuthResponse.RootObject oAuthResponse = null;
 
-            Models.OAuthResponse.RootObject oAuthResponse = await OAuthLogin();
-            if(oAuthResponse != null && oAuthResponse.data != null && !string.IsNullOrEmpty(oAuthResponse.data.access_token))
+            if (!string.IsNullOrEmpty(refreshToken))
+            {
+                //Console.WriteLine($"Refreshing Token {refreshToken}");
+                // Try refreshing the old token
+                oAuthResponse = await OAuthToken(refreshToken);
+                //Console.WriteLine($"OAuthToken ---> {oAuthResponse.data.access_token} {oAuthResponse.data.expires_in} {oAuthResponse.data.refresh_token} {oAuthResponse.data.token_type}");
+            }
+
+            if (oAuthResponse == null || oAuthResponse.data == null || string.IsNullOrEmpty(oAuthResponse.data.access_token))
+            {
+                //Console.WriteLine("Getting Token");
+                // Get a new token
+                oAuthResponse = await OAuthLogin();
+                //Console.WriteLine($"OAuthLogin ---> {oAuthResponse.data.access_token} {oAuthResponse.data.expires_in} {oAuthResponse.data.refresh_token} {oAuthResponse.data.token_type}");
+            }
+
+            if (oAuthResponse != null && oAuthResponse.data != null && !string.IsNullOrEmpty(oAuthResponse.data.access_token))
             {
                 token = $"{oAuthResponse.data.token_type} {oAuthResponse.data.access_token}";
-
                 //Console.WriteLine($"GetAccessToken Success. {oAuthResponse.data.token_type} {oAuthResponse.data.expires_in}");
+                FlowFinanceToken flowFinanceToken = new FlowFinanceToken
+                {
+                    AccessToken = token,
+                    ExpiresAt = DateTime.Now.AddSeconds(oAuthResponse.data.expires_in),
+                    RefreshToken = oAuthResponse.data.refresh_token
+                };
+
+                await _paymentRequestRepository.SaveToken(flowFinanceToken);
             }
             else
             {

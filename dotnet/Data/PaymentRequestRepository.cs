@@ -20,6 +20,7 @@
         private const string SETTINGS_NAME = "merchantSettings";
         private const string BUCKET = "paymentRequest";
         private const string SHOPPER_BUCKET = "shoppers";
+        private const string TOKEN_BUCKET = "oauth-token";
         private const string HEADER_VTEX_CREDENTIAL = "X-Vtex-Credential";
         private const string HEADER_VTEX_WORKSPACE = "X-Vtex-Workspace";
         private const string HEADER_VTEX_ACCOUNT = "X-Vtex-Account";
@@ -166,7 +167,7 @@
                 RequestUri = new Uri($"http://apps.{this._environmentVariableProvider.Region}.vtex.io/{this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_ACCOUNT]}/{this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_WORKSPACE]}/apps/{APP_SETTINGS}/settings"),
             };
 
-            Console.WriteLine($"Request URL = {request.RequestUri}");
+            //Console.WriteLine($"Request URL = {request.RequestUri}");
 
             string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
             if (authToken != null)
@@ -396,6 +397,64 @@
             string responseContent = await response.Content.ReadAsStringAsync();
 
             return response.IsSuccessStatusCode;
+        }
+
+        public async Task<FlowFinanceToken> LoadToken()
+        {
+            Console.WriteLine("-> LoadToken <-");
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"http://vbase.{this._environmentVariableProvider.Region}.vtex.io/{this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_ACCOUNT]}/master/buckets/{this._applicationName}/{TOKEN_BUCKET}/files/{TOKEN_BUCKET}")
+            };
+
+            string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
+            if (authToken != null)
+            {
+                request.Headers.Add(AUTHORIZATION_HEADER_NAME, authToken);
+                request.Headers.Add(VTEX_ID_HEADER_NAME, authToken);
+            }
+
+            var client = _clientFactory.CreateClient();
+            var response = await client.SendAsync(request);
+            string responseContent = await response.Content.ReadAsStringAsync();
+            //Console.WriteLine($"-> LoadToken [{response.StatusCode}] {responseContent} <-");
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+
+            // A helper method is in order for this as it does not return the stack trace etc.
+            response.EnsureSuccessStatusCode();
+
+            FlowFinanceToken flowFinanceToken = JsonConvert.DeserializeObject<FlowFinanceToken>(responseContent);
+
+            return flowFinanceToken;
+        }
+
+        public async Task SaveToken(FlowFinanceToken flowFinanceToken)
+        {
+            Console.WriteLine("-> SaveToken <-");
+            var jsonSerializedToken = JsonConvert.SerializeObject(flowFinanceToken);
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Put,
+                RequestUri = new Uri($"http://vbase.{this._environmentVariableProvider.Region}.vtex.io/{this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_ACCOUNT]}/master/buckets/{this._applicationName}/{TOKEN_BUCKET}/files/{TOKEN_BUCKET}"),
+                Content = new StringContent(jsonSerializedToken, Encoding.UTF8, APPLICATION_JSON)
+            };
+
+            string authToken = this._httpContextAccessor.HttpContext.Request.Headers[HEADER_VTEX_CREDENTIAL];
+            if (authToken != null)
+            {
+                request.Headers.Add(AUTHORIZATION_HEADER_NAME, authToken);
+                request.Headers.Add(VTEX_ID_HEADER_NAME, authToken);
+            }
+
+            var client = _clientFactory.CreateClient();
+            var response = await client.SendAsync(request);
+            string responseContent = await response.Content.ReadAsStringAsync();
+            //Console.WriteLine($"-> SaveToken [{response.StatusCode}] {responseContent} <-");
         }
     }
 }

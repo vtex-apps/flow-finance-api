@@ -213,7 +213,7 @@ namespace UnitTests
                 var request = new HttpRequestMessage
                 {
                     Method = HttpMethod.Post,
-                    RequestUri = new Uri($"{FlowFinaceStgApiUrl}{FlowFinanceConstants.OAuth}"),
+                    RequestUri = new Uri($"{FlowFinaceStgApiUrl}{FlowFinanceConstants.OAuthLogin}"),
                 };
 
                 // Flow Headers
@@ -229,6 +229,8 @@ namespace UnitTests
                     oAuthResponse = JsonConvert.DeserializeObject<FlowFinance.Models.OAuthResponse.RootObject>(reply);
                     string accessToken = $"{oAuthResponse.data.token_type} {oAuthResponse.data.access_token}";
                     Console.WriteLine($"Access Token = {accessToken}");
+                    Console.WriteLine($"Access Token = {accessToken}");
+                    Console.WriteLine($"Expires {DateTime.Now.AddSeconds(oAuthResponse.data.expires_in)} Refresh[{oAuthResponse.data.refresh_token}]");
                 }
                 else
                 {
@@ -261,18 +263,18 @@ namespace UnitTests
             string credit = "BRL 5000.00";
             decimal parsedCredit = 0m;
 
-            if (!string.IsNullOrEmpty(credit))
-            {
-                string[] arrayAvailableCredit = credit.Split(' ');
-                if(decimal.TryParse(arrayAvailableCredit[1], out parsedCredit))
-                {
-                    Console.WriteLine($"'{credit}' parsed to '{parsedCredit}'");
-                }
-                else
-                {
-                    Console.WriteLine($"Coould not parse '{credit}'");
-                }
-            }
+            //if (!string.IsNullOrEmpty(credit))
+            //{
+            //    string[] arrayAvailableCredit = credit.Split(' ');
+            //    if (decimal.TryParse(arrayAvailableCredit[1], out parsedCredit))
+            //    {
+            //        Console.WriteLine($"'{credit}' parsed to '{parsedCredit}'");
+            //    }
+            //    else
+            //    {
+            //        Console.WriteLine($"Coould not parse '{credit}'");
+            //    }
+            //}
 
             //CultureInfo cultureInfo = new CultureInfo("pt-BR");
             //if(decimal.TryParse(credit, NumberStyles.AllowCurrencySymbol, cultureInfo, out parsedCredit))
@@ -283,6 +285,23 @@ namespace UnitTests
             //{
             //    Console.WriteLine($"Coould not parse '{credit}'");
             //}
+
+            decimal line_of_credit = 0m;
+            string cultureInfo = string.Empty;
+            if (!string.IsNullOrEmpty(credit))
+            {
+                string[] arrayLineOfCredit = credit.Split(' ');
+                decimal.TryParse(arrayLineOfCredit[1], out line_of_credit);
+                switch (arrayLineOfCredit[0])
+                {
+                    case "BRL":
+                        cultureInfo = FlowFinanceConstants.CultureInfo.Brazil;
+                        break;
+                }
+            }
+
+            string value = line_of_credit.ToString("C2", CultureInfo.GetCultureInfo(cultureInfo));
+            Console.WriteLine($"'{credit}' parsed to '{value}'");
         }
 
         private string GetToken()
@@ -295,7 +314,7 @@ namespace UnitTests
                 var request = new HttpRequestMessage
                 {
                     Method = HttpMethod.Post,
-                    RequestUri = new Uri($"{FlowFinaceStgApiUrl}{FlowFinanceConstants.OAuth}"),
+                    RequestUri = new Uri($"{FlowFinaceStgApiUrl}{FlowFinanceConstants.OAuthLogin}"),
                 };
 
                 // Flow Headers
@@ -311,6 +330,7 @@ namespace UnitTests
                     oAuthResponse = JsonConvert.DeserializeObject<FlowFinance.Models.OAuthResponse.RootObject>(reply);
                     accessToken = $"{oAuthResponse.data.token_type} {oAuthResponse.data.access_token}";
                     Console.WriteLine($"Access Token = {accessToken}");
+                    Console.WriteLine($"Expires {DateTime.Now.AddSeconds(oAuthResponse.data.expires_in)} Refresh[{oAuthResponse.data.refresh_token}]");
                 }
                 else
                 {

@@ -98,5 +98,15 @@
         {
             throw new System.NotImplementedException();
         }
+
+        public Task<FlowFinanceToken> LoadToken()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task SaveToken(FlowFinanceToken flowFinanceToken)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

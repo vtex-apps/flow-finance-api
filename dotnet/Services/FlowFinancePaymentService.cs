@@ -82,7 +82,7 @@ namespace FlowFinance.Services
                 {
                     int accountId = int.Parse(shopper.accountId);
                     MerchantSettings merchantSettings = await this._paymentRequestRepository.GetMerchantSettings();
-                    IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings);
+                    IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings, _paymentRequestRepository);
                     ResponseWrapper responseWrapper = await flowFinanceAPI.CreateLoan(orderInformation.offerToken, accountId);
                     if (responseWrapper.success)
                     {
@@ -251,7 +251,7 @@ namespace FlowFinance.Services
         {
             bool eligible = false;
             MerchantSettings merchantSettings = await this._paymentRequestRepository.GetMerchantSettings();
-            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings);
+            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings, _paymentRequestRepository);
             ResponseWrapper responseWrapper = await flowFinanceAPI.PreQualify(cnpj);
             if (responseWrapper.success)
             {
@@ -270,7 +270,7 @@ namespace FlowFinance.Services
         public async Task<Models.CreateAccountResponse.RootObject> CreateAccount(Models.CreateAccountRequest.RootObject createAccountRequest)
         {
             MerchantSettings merchantSettings = await this._paymentRequestRepository.GetMerchantSettings();
-            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings);
+            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings, _paymentRequestRepository);
             ResponseWrapper responseWrapper = await flowFinanceAPI.CreateAccount(createAccountRequest);
             Models.CreateAccountResponse.RootObject createAccountResponse = (Models.CreateAccountResponse.RootObject)responseWrapper.responseObject;
 
@@ -283,7 +283,7 @@ namespace FlowFinance.Services
         {
             Models.LoanPreviewResponse.RootObject loanPreviewResponse = null;
             MerchantSettings merchantSettings = await this._paymentRequestRepository.GetMerchantSettings();
-            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings);
+            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings, _paymentRequestRepository);
             ResponseWrapper responseWrapper = await flowFinanceAPI.LoanPreview(amount, accountId);
             if (responseWrapper.success)
             {
@@ -303,7 +303,7 @@ namespace FlowFinance.Services
         {
             Models.CreateLoanResponse.RootObject createLoanResponse = null;
             MerchantSettings merchantSettings = await this._paymentRequestRepository.GetMerchantSettings();
-            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings);
+            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings, _paymentRequestRepository);
             ResponseWrapper responseWrapper = await flowFinanceAPI.CreateLoan(offerToken, accountId);
             if (responseWrapper.success)
             {
@@ -366,7 +366,7 @@ namespace FlowFinance.Services
                 getMerchantSettingsTime = timeSpan.TotalMilliseconds;
 
                 stopWatch.Restart();
-                IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings);
+                IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings, _paymentRequestRepository);
                 stopWatch.Stop();
                 timeSpan = stopWatch.Elapsed;
                 apiTime = timeSpan.TotalMilliseconds;
@@ -469,7 +469,7 @@ namespace FlowFinance.Services
         public async Task<Models.ListAccountsResponse.RootObject> ListAccounts(int page, int limit)
         {
             MerchantSettings merchantSettings = await this._paymentRequestRepository.GetMerchantSettings();
-            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings);
+            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings, _paymentRequestRepository);
             ResponseWrapper responseWrapper = await flowFinanceAPI.ListAccounts(page, limit);
             Models.ListAccountsResponse.RootObject listAccountsResponse = (Models.ListAccountsResponse.RootObject)responseWrapper.responseObject;
 
@@ -479,7 +479,7 @@ namespace FlowFinance.Services
         public async Task<Models.ListPersonsResponse.RootObject> ListPersons(int accountId)
         {
             MerchantSettings merchantSettings = await this._paymentRequestRepository.GetMerchantSettings();
-            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings);
+            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings, _paymentRequestRepository);
             ResponseWrapper responseWrapper = await flowFinanceAPI.ListPersons(accountId);
             Models.ListPersonsResponse.RootObject listPersonsResponse = (Models.ListPersonsResponse.RootObject)responseWrapper.responseObject;
 
@@ -558,7 +558,7 @@ namespace FlowFinance.Services
             };
 
             MerchantSettings merchantSettings = await this._paymentRequestRepository.GetMerchantSettings();
-            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings);
+            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings, _paymentRequestRepository);
 
             Models.CreateAccountRequest.RootObject createAccountRequest = new Models.CreateAccountRequest.RootObject
             {
@@ -765,7 +765,7 @@ namespace FlowFinance.Services
         public async Task<string> SignLoan(Models.SignLoanRequest.RootObject signLoanRequest, string loanId, int accountId)
         {
             MerchantSettings merchantSettings = await this._paymentRequestRepository.GetMerchantSettings();
-            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings);
+            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings, _paymentRequestRepository);
             ResponseWrapper responseWrapper = await flowFinanceAPI.SignLoan(signLoanRequest, loanId, accountId);
             string signLoanResponse = responseWrapper.success ? FlowFinanceConstants.Success : responseWrapper.errorMessage;
 
@@ -775,7 +775,7 @@ namespace FlowFinance.Services
         public async Task<Models.CreateWebhookEndpointResponse.RootObject> CreateWebhook(Models.CreateWebhookEndpointRequest.RootObject createWebhookRequest)
         {
             MerchantSettings merchantSettings = await this._paymentRequestRepository.GetMerchantSettings();
-            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings);
+            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings, _paymentRequestRepository);
             ResponseWrapper responseWrapper = await flowFinanceAPI.CreateWebhookEndpoint(createWebhookRequest);
             Models.CreateWebhookEndpointResponse.RootObject createWebhookResponse = (Models.CreateWebhookEndpointResponse.RootObject)responseWrapper.responseObject;
 
@@ -785,7 +785,7 @@ namespace FlowFinance.Services
         public async Task<string> DeleteWebhookEndpoint(int webhookId)
         {
             MerchantSettings merchantSettings = await this._paymentRequestRepository.GetMerchantSettings();
-            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings);
+            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings, _paymentRequestRepository);
             ResponseWrapper responseWrapper = await flowFinanceAPI.DeleteWebhookEndpoint(webhookId);
             string deleteWebhookResponse = responseWrapper.success ? responseWrapper.responseMessage : responseWrapper.errorMessage;
 
@@ -803,7 +803,7 @@ namespace FlowFinance.Services
             else
             {
                 MerchantSettings merchantSettings = await this._paymentRequestRepository.GetMerchantSettings();
-                IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings);
+                IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings, _paymentRequestRepository);
                 ResponseWrapper responseWrapper = await flowFinanceAPI.RetrieveWebhookEndpoints();
                 if (responseWrapper.success)
                 {
@@ -916,7 +916,7 @@ namespace FlowFinance.Services
         public async Task<Models.RetrieveLoanByIdResponse.RootObject> RetrieveLoanById(string loanId, int accountId)
         {
             MerchantSettings merchantSettings = await this._paymentRequestRepository.GetMerchantSettings();
-            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings);
+            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings, _paymentRequestRepository);
             ResponseWrapper responseWrapper = await flowFinanceAPI.RetrieveLoanById(loanId, accountId);
             Models.RetrieveLoanByIdResponse.RootObject retrieveLoanByIdResponse = (Models.RetrieveLoanByIdResponse.RootObject)responseWrapper.responseObject;
 
@@ -982,7 +982,7 @@ namespace FlowFinance.Services
             {
                 string[] arrayLineOfCredit = lineOfCredit.Split(' ');
                 decimal.TryParse(arrayLineOfCredit[1], out line_of_credit);
-                switch(arrayLineOfCredit[1])
+                switch(arrayLineOfCredit[0])
                 {
                     case "BRL":
                         cultureInfo = FlowFinanceConstants.CultureInfo.Brazil;
@@ -1022,7 +1022,7 @@ namespace FlowFinance.Services
         public async Task<string> DeleteAccount(int accountId)
         {
             MerchantSettings merchantSettings = await this._paymentRequestRepository.GetMerchantSettings();
-            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings);
+            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings, _paymentRequestRepository);
             ResponseWrapper responseWrapper = await flowFinanceAPI.DeleteAccount(accountId);
 
             return responseWrapper.responseMessage;
@@ -1031,7 +1031,7 @@ namespace FlowFinance.Services
         public async Task<string> DeletePerson(int accountId, string personId)
         {
             MerchantSettings merchantSettings = await this._paymentRequestRepository.GetMerchantSettings();
-            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings);
+            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings, _paymentRequestRepository);
             ResponseWrapper responseWrapper = await flowFinanceAPI.DeletePerson(accountId, personId);
 
             return responseWrapper.responseMessage;
@@ -1040,7 +1040,7 @@ namespace FlowFinance.Services
         public async Task<Models.RetrieveAllLoansResponse.RootObject> RetrieveAllLoans(int accountId)
         {
             MerchantSettings merchantSettings = await this._paymentRequestRepository.GetMerchantSettings();
-            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings);
+            IFlowFinanceAPI flowFinanceAPI = new FlowFinanceAPI(_httpContextAccessor, _clientFactory, merchantSettings, _paymentRequestRepository);
             ResponseWrapper responseWrapper = await flowFinanceAPI.RetrieveAllLoans(accountId);
             Models.RetrieveAllLoansResponse.RootObject retrieveAllLoansResponse = (Models.RetrieveAllLoansResponse.RootObject)responseWrapper.responseObject;
 

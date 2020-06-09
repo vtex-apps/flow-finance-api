@@ -11,7 +11,7 @@ namespace FlowFinance.Services
         Task<ResponseWrapper> CreateLoan(string offerToken, int accountId);
         Task<ResponseWrapper> RetrieveAccountById(int accountId);
         Task<Models.OAuthResponse.RootObject> OAuthLogin();
-        Task<string> GetAccessToken();
+        Task<string> GetAccessToken(string refreshToken);
         Task<ResponseWrapper> SignLoan(Models.SignLoanRequest.RootObject signLoanRequest, string id, int accountId);
         Task<ResponseWrapper> CreatePerson(Models.CreatePersonRequest.RootObject createPersonRequest, int accountId);
         Task<ResponseWrapper> UpdatePerson(Models.CreatePersonRequest.RootObject updatePersonRequest, int accountId, int personId);
@@ -25,5 +25,6 @@ namespace FlowFinance.Services
         Task<ResponseWrapper> DeleteAccount(int accountId);
         Task<ResponseWrapper> DeletePerson(int accountId, string personId);
         Task<ResponseWrapper> RetrieveAllLoans(int accountId);
+        Task GetToken();
     }
 }
