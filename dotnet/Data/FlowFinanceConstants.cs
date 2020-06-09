@@ -16,7 +16,8 @@
         public const string FlowFinaceApiUrlSecure = "https://api.flowfinance.com.br";
         public const string FlowFinaceStgApiUrlSecure = "https://stg-gpp.flowfinance.com.br";
         public const string FlowFinaceApiVersion = "/api/v1/";
-        public const string OAuth = "oauth/login";
+        public const string OAuthLogin = "oauth/login";
+        public const string OAuthToken = "oauth/token";
         public const string Accounts = "accounts";
         public const string Persons = "persons";
         public const string PreQualify = "pre-qualify";
