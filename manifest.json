@@ -102,6 +102,13 @@
         "path": "/api/v1/*"
       }
     },
+	{
+      "name": "outbound-access",
+      "attrs": {
+        "host": "api.flowfinance.com.br",
+        "path": "/api/v1/*"
+      }
+    },
     {
       "name": "vbase-read-write"
     }
