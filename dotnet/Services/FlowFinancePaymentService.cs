@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -599,7 +600,7 @@ namespace FlowFinance.Services
                         new Models.CreateAccountRequest.Physical()
                         {
                             type = physicalDocument.type,
-                            value = physicalDocument.value
+                            value = await EncodeFile(physicalDocument.value)
                         });
                 }
             }
@@ -669,7 +670,7 @@ namespace FlowFinance.Services
                             new Models.CreatePersonRequest.Physical()
                             {
                                 type = physicalDocument.type,
-                                value = physicalDocument.value
+                                value = await EncodeFile(physicalDocument.value)
                             });
                     }
                 }
@@ -1061,6 +1062,22 @@ namespace FlowFinance.Services
             }
 
             return retval;
+        }
+
+        public async Task<string> EncodeFile(IFormFile file)
+        {
+            string s = string.Empty;
+            if (file.Length > 0)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    file.CopyTo(ms);
+                    var fileBytes = ms.ToArray();
+                    s = Convert.ToBase64String(fileBytes);
+                }
+            }
+
+            return s;
         }
     }
 }

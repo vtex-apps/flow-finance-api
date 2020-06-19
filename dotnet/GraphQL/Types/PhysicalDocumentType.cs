@@ -15,7 +15,8 @@ namespace FlowFinance.GraphQL.Types
             Name = "PhysicalDocument";
 
             Field(b => b.type).Description("Physical Documents Type");
-            Field(b => b.value).Description("Physical Documents Value");
+            //Field(b => b.value).Description("Physical Documents Value");
+            Field<UploadGraphType>("value");
         }
     }
 }
