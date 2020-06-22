@@ -1,4 +1,5 @@
-﻿using GraphQL.Language.AST;
+﻿using GraphQL;
+using GraphQL.Language.AST;
 using GraphQL.Types;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -7,6 +8,7 @@ using System.Text;
 
 namespace FlowFinance.GraphQL.Types
 {
+    [GraphQLMetadata("UploadGraph")]
     public class UploadGraphType : ScalarGraphType
     {
         public UploadGraphType()
