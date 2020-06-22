@@ -117,7 +117,7 @@ input DocumentsInput {
 
 input PhysicalDocumentInput {
 	type: String!
-	value: String!
+	value: Upload!
 }
 
 input VirtualDocumentInput {
