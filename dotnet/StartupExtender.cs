@@ -4,6 +4,7 @@ using FlowFinance.Models;
 using FlowFinance.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -26,6 +27,10 @@ namespace Vtex
             services.AddHttpClient();
             services.AddSingleton<MerchantSettings>(new MerchantSettings());
             services.AddTransient<IFlowFinanceAPI, FlowFinanceAPI>();
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
         }
 
         // This method is called inside Startup.Configure() before calling app.UseRouting()
