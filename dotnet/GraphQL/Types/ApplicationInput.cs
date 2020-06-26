@@ -56,7 +56,6 @@ namespace FlowFinance.GraphQL.Types
     public class PhysicalDocument
     {
         public string type { get; set; }
-        public IFormFile value { get; set; }
     }
 
     public class VirtualDocument
