@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+- Changed Physical Document value to Upload type
+
 ## [0.0.44] - 2020-06-11
 
 ### Changed

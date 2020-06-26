@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace FlowFinance.GraphQL.Types
@@ -54,7 +56,6 @@ namespace FlowFinance.GraphQL.Types
     public class PhysicalDocument
     {
         public string type { get; set; }
-        public string value { get; set; }
     }
 
     public class VirtualDocument

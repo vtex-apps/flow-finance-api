@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -460,7 +461,7 @@ namespace FlowFinance.Services
             stopwatchTotal.Stop();
             timeSpan = stopwatchTotal.Elapsed;
 
-            _context.Vtex.Logger.Info("FlowFinance", "GetLoanOptions", $"Shopper:{getShopperTime} Settiings:{getMerchantSettingsTime} API:{apiTime} Account:{retrieveAccountByIdTime} Preview:{loanPreviewTime} Total:{timeSpan.TotalMilliseconds}");
+            _context.Vtex.Logger.Info("FlowFinance", "GetLoanOptions", $"Shopper:{getShopperTime} Settings:{getMerchantSettingsTime} API:{apiTime} Account:{retrieveAccountByIdTime} Preview:{loanPreviewTime} Total:{timeSpan.TotalMilliseconds}");
             _context.Vtex.Logger.Info("FlowFinance", "GetLoanOptions", JsonConvert.SerializeObject(getLoanOptionsResponse));
 
             return getLoanOptionsResponse;
@@ -547,7 +548,7 @@ namespace FlowFinance.Services
             _context.Vtex.Logger.Info("FlowFinance", accountName, message);
         }
 
-        public async Task<ApplicationResult> ProcessApplication(ApplicationInput applicationInput)
+        public async Task<ApplicationResult> ProcessApplication(ApplicationInput applicationInput, IFormFile businessInfoFile, IFormFile personalInfoFile)
         {
             //Console.WriteLine($"ProcessApplication {applicationInput.businessInfo.name}");
 
@@ -599,7 +600,7 @@ namespace FlowFinance.Services
                         new Models.CreateAccountRequest.Physical()
                         {
                             type = physicalDocument.type,
-                            value = physicalDocument.value
+                            value = await EncodeFile(businessInfoFile)
                         });
                 }
             }
@@ -669,7 +670,7 @@ namespace FlowFinance.Services
                             new Models.CreatePersonRequest.Physical()
                             {
                                 type = physicalDocument.type,
-                                value = physicalDocument.value
+                                value = await EncodeFile(personalInfoFile)
                             });
                     }
                 }
@@ -1061,6 +1062,29 @@ namespace FlowFinance.Services
             }
 
             return retval;
+        }
+
+        public async Task<string> EncodeFile(IFormFile file)
+        {
+            string s = string.Empty;
+            try
+            {
+                if (file.Length > 0)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        file.CopyTo(ms);
+                        var fileBytes = ms.ToArray();
+                        s = Convert.ToBase64String(fileBytes);
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                _context.Vtex.Logger.Error("FlowFinance", "EncodeFile", $"Error encoding file {file.Name}", ex);
+            }
+
+            return s;
         }
     }
 }
