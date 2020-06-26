@@ -548,7 +548,7 @@ namespace FlowFinance.Services
             _context.Vtex.Logger.Info("FlowFinance", accountName, message);
         }
 
-        public async Task<ApplicationResult> ProcessApplication(ApplicationInput applicationInput)
+        public async Task<ApplicationResult> ProcessApplication(ApplicationInput applicationInput, IFormFile businessInfoFile, IFormFile personalInfoFile)
         {
             //Console.WriteLine($"ProcessApplication {applicationInput.businessInfo.name}");
 
@@ -600,7 +600,7 @@ namespace FlowFinance.Services
                         new Models.CreateAccountRequest.Physical()
                         {
                             type = physicalDocument.type,
-                            value = await EncodeFile(physicalDocument.value)
+                            value = await EncodeFile(businessInfoFile)
                         });
                 }
             }
@@ -670,7 +670,7 @@ namespace FlowFinance.Services
                             new Models.CreatePersonRequest.Physical()
                             {
                                 type = physicalDocument.type,
-                                value = await EncodeFile(physicalDocument.value)
+                                value = await EncodeFile(personalInfoFile)
                             });
                     }
                 }

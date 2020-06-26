@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using FlowFinance.Data;
 using FlowFinance.GraphQL.Types;
 using FlowFinance.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace FlowFinance.Services
 {
@@ -22,7 +23,7 @@ namespace FlowFinance.Services
         Task<GetLoanOptionsResponse> GetLoanOptions(GetLoanOptionsRequest getLoanOptionsRequest);
         Task SetAccountId(FlowFinanceShopper shopper);
         Task ProcessCallback(Models.WebhookPayload.RootObject callbackPayload);
-        Task<ApplicationResult> ProcessApplication(ApplicationInput applicationInput);
+        Task<ApplicationResult> ProcessApplication(ApplicationInput applicationInput, IFormFile businessInfoFile, IFormFile personalInfoFile);
         Task<Models.ListAccountsResponse.RootObject> ListAccounts(int page, int limit);
         Task<Models.ListPersonsResponse.RootObject> ListPersons(int accountId);
         Task<string> SignLoan(Models.SignLoanRequest.RootObject signLoanRequest, string loanId, int accountId);

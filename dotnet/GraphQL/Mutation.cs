@@ -2,8 +2,10 @@
 using FlowFinance.Services;
 using GraphQL;
 using GraphQL.Types;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace FlowFinance.GraphQL
@@ -15,26 +17,31 @@ namespace FlowFinance.GraphQL
         {
             Name = "Mutation";
 
-            Field<BooleanGraphType>(
+            FieldAsync<BooleanGraphType>(
                 "checkPreQualify",
                 arguments: new QueryArguments(
                     new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "cnpj", Description = "pre-qualify" }
                 ),
-                resolve: context =>
+                resolve: async context =>
                 {
                     var cnpj = context.GetArgument<string>("cnpj");
-                    return flowFinancePaymentService.PreQualify(cnpj);
+                    return await flowFinancePaymentService.PreQualify(cnpj);
                 });
 
-            Field<ApplicationResultType>(
+            FieldAsync<ApplicationResultType>(
                 "processApplication",
                 arguments: new QueryArguments(
-                    new QueryArgument<NonNullGraphType<ApplicationInputType>> { Name = "application", Description = "Application Input" }
+                    new QueryArgument<NonNullGraphType<ApplicationInputType>> { Name = "application", Description = "Application Input" },
+                    new QueryArgument<NonNullGraphType<UploadGraphType>> { Name = "businessInfoFile" },
+                    new QueryArgument<NonNullGraphType<UploadGraphType>> { Name = "personalInfoFile" }
                 ),
-                resolve: context =>
+                resolve: async context =>
                 {
                     var applicationInput = context.GetArgument<ApplicationInput>("application");
-                    return flowFinancePaymentService.ProcessApplication(applicationInput);
+                    var businessInfoFile = context.GetArgument<IFormFile>("businessInfoFile");
+                    var personalInfoFile = context.GetArgument<IFormFile>("personalInfoFile");
+
+                    return flowFinancePaymentService.ProcessApplication(applicationInput, businessInfoFile, personalInfoFile);
                 });
         }
     }
