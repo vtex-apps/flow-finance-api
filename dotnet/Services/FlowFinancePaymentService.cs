@@ -461,7 +461,7 @@ namespace FlowFinance.Services
             stopwatchTotal.Stop();
             timeSpan = stopwatchTotal.Elapsed;
 
-            _context.Vtex.Logger.Info("FlowFinance", "GetLoanOptions", $"Shopper:{getShopperTime} Settiings:{getMerchantSettingsTime} API:{apiTime} Account:{retrieveAccountByIdTime} Preview:{loanPreviewTime} Total:{timeSpan.TotalMilliseconds}");
+            _context.Vtex.Logger.Info("FlowFinance", "GetLoanOptions", $"Shopper:{getShopperTime} Settings:{getMerchantSettingsTime} API:{apiTime} Account:{retrieveAccountByIdTime} Preview:{loanPreviewTime} Total:{timeSpan.TotalMilliseconds}");
             _context.Vtex.Logger.Info("FlowFinance", "GetLoanOptions", JsonConvert.SerializeObject(getLoanOptionsResponse));
 
             return getLoanOptionsResponse;

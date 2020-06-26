@@ -2,6 +2,7 @@
 using FlowFinance.Services;
 using GraphQL;
 using GraphQL.Types;
+using GraphQL.Upload.AspNetCore;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
