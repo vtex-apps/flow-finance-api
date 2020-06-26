@@ -1067,14 +1067,21 @@ namespace FlowFinance.Services
         public async Task<string> EncodeFile(IFormFile file)
         {
             string s = string.Empty;
-            if (file.Length > 0)
+            try
             {
-                using (var ms = new MemoryStream())
+                if (file.Length > 0)
                 {
-                    file.CopyTo(ms);
-                    var fileBytes = ms.ToArray();
-                    s = Convert.ToBase64String(fileBytes);
+                    using (var ms = new MemoryStream())
+                    {
+                        file.CopyTo(ms);
+                        var fileBytes = ms.ToArray();
+                        s = Convert.ToBase64String(fileBytes);
+                    }
                 }
+            }
+            catch(Exception ex)
+            {
+                _context.Vtex.Logger.Error("FlowFinance", "EncodeFile", $"Error encoding file {file.Name}", ex);
             }
 
             return s;
