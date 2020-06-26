@@ -17,25 +17,25 @@ namespace FlowFinance.GraphQL
         {
             Name = "Mutation";
 
-            FieldAsync<BooleanGraphType>(
+            Field<BooleanGraphType>(
                 "checkPreQualify",
                 arguments: new QueryArguments(
                     new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "cnpj", Description = "pre-qualify" }
                 ),
-                resolve: async context =>
+                resolve: context =>
                 {
                     var cnpj = context.GetArgument<string>("cnpj");
-                    return await flowFinancePaymentService.PreQualify(cnpj);
+                    return flowFinancePaymentService.PreQualify(cnpj);
                 });
 
-            FieldAsync<ApplicationResultType>(
+            Field<ApplicationResultType>(
                 "processApplication",
                 arguments: new QueryArguments(
                     new QueryArgument<NonNullGraphType<ApplicationInputType>> { Name = "application", Description = "Application Input" },
                     new QueryArgument<NonNullGraphType<UploadGraphType>> { Name = "businessInfoFile" },
                     new QueryArgument<NonNullGraphType<UploadGraphType>> { Name = "personalInfoFile" }
                 ),
-                resolve: async context =>
+                resolve: context =>
                 {
                     var applicationInput = context.GetArgument<ApplicationInput>("application");
                     var businessInfoFile = context.GetArgument<IFormFile>("businessInfoFile");

@@ -128,7 +128,7 @@ input VirtualDocumentInput {
 
 type Mutation {
 	checkPreQualify(cnpj: String!): Boolean
-	processApplication(application: ApplicationInput!, businessInfoFile: String!, personalInfoFile: String!): ApplicationResult
+	processApplication(application: ApplicationInput!, businessInfoFile: Upload!, personalInfoFile: Upload!): ApplicationResult
 }
 
 type Query {
