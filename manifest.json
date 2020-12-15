@@ -89,6 +89,12 @@
       "name": "AcessaTodosPedidos"
     },
     {
+      "name": "template-listar"
+    },
+    {
+      "name": "send-message"
+    },
+    {
       "name": "outbound-access",
       "attrs": {
         "host": "mailservice.vtex.com.br",
